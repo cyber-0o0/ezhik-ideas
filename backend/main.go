@@ -27,6 +27,11 @@ type FeedbackRequest struct {
 	Feedback string `json:"feedback" binding:"required"`
 }
 
+type AIRequest struct {
+	Prompt      string `json:"prompt" binding:"required"`
+	SystemPrompt string `json:"systemPrompt"`
+}
+
 func main() {
 	// Setup router
 	r := gin.Default()
@@ -47,6 +52,7 @@ func main() {
 	r.GET("/api/idea", getIdea)
 	r.GET("/api/stats", getStats)
 	r.POST("/api/feedback", sendFeedback)
+	r.POST("/api/ai", handleAI)
 	
 	// Serve frontend
 	r.GET("/", func(c *gin.Context) {
@@ -94,7 +100,55 @@ func sendFeedback(c *gin.Context) {
 	c.JSON(http.StatusOK, gin.H{"status": "ok"})
 }
 
-const GroqAPIKey = os.Getenv("GROQ_API_KEY")
+func handleAI(c *gin.Context) {
+	var req AIRequest
+	if err := c.ShouldBindJSON(&req); err != nil {
+		c.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})
+		return
+	}
+	
+	systemPrompt := req.SystemPrompt
+	if systemPrompt == "" {
+		systemPrompt = "Ты полезный AI-ассистент. Отвечай на русском языке."
+	}
+	
+	response := callGroq(req.Prompt, systemPrompt)
+	c.JSON(http.StatusOK, gin.H{"response": response})
+}
+
+func callGroq(prompt, systemPrompt string) string {
+	client := &http.Client{}
+	
+	reqBody := GroqRequest{
+		Model: "llama-3.3-70b-versatile",
+		Messages: []GroqMessage{
+			{Role: "system", Content: systemPrompt},
+			{Role: "user", Content: prompt},
+		},
+	}
+	
+	jsonData, _ := json.Marshal(reqBody)
+	req, _ := http.NewRequest("POST", "https://api.groq.com/openai/v1/chat/completions", bytes.NewBuffer(jsonData))
+	req.Header.Set("Authorization", "Bearer "+GroqAPIKey)
+	req.Header.Set("Content-Type", "application/json")
+	
+	resp, err := client.Do(req)
+	if err != nil {
+		return "Error: " + err.Error()
+	}
+	defer resp.Body.Close()
+	
+	var groqResp GroqResponse
+	json.NewDecoder(resp.Body).Decode(&groqResp)
+	
+	if len(groqResp.Choices) > 0 {
+		return groqResp.Choices[0].Message.Content
+	}
+	
+	return "No response from AI"
+}
+
+var GroqAPIKey = os.Getenv("GROQ_API_KEY")
 
 type GroqMessage struct {
 	Role    string `json:"role"`
