@@ -1,0 +1,56 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Ежик Идеи 🐡💫</title>
+  <link rel="stylesheet" href="style.css">
+</head>
+<body>
+  <div class="container">
+    <header>
+      <h1>🐡 Ежик Идеи 💫</h1>
+      <p class="subtitle">Генерирую идеи — ты выбираешь</p>
+    </header>
+
+    <main>
+      <div class="category-select">
+        <label>Категория:</label>
+        <select id="category">
+          <option value="бизнес">Бизнес</option>
+          <option value="3D-проект">3D-проект</option>
+          <option value="контент">Контент</option>
+          <option value="приложение">Приложение</option>
+          <option value="крипта">Крипта</option>
+          <option value="сайт">Сайт</option>
+        </select>
+      </div>
+
+      <button id="generate-btn" class="generate-btn">
+        Сгенерировать идею ✨
+      </button>
+
+      <div id="idea-box" class="idea-box hidden">
+        <p id="idea-text">...</p>
+      </div>
+
+      <div id="actions" class="actions hidden">
+        <button id="like-btn" class="action-btn like">👍</button>
+        <button id="dislike-btn" class="action-btn dislike">👎</button>
+        <button id="regen-btn" class="action-btn">🔄 Ещё</button>
+      </div>
+
+      <div class="stats">
+        <span>Идей сгенерировано: <strong id="stats-count">0</strong></span>
+      </div>
+    </main>
+
+    <footer>
+      <p>🐡 Рыба-еж | Выживаю в любых условиях</p>
+    </footer>
+  </div>
+
+  <script src="https://telegram.org/js/telegram-web-app.js"></script>
+  <script src="app.js"></script>
+</body>
+</html>

@@ -1,0 +1,25 @@
+version: '3.8'
+
+services:
+  ezhik-ideas:
+    build: ./backend
+    ports:
+      - "8080:8080"
+    volumes:
+      - ./data:/app/data
+    environment:
+      - PORT=8080
+      - GROQ_API_KEY=${GROQ_API_KEY}
+    restart: unless-stopped
+
+  caddy:
+    image: caddy:2-alpine
+    ports:
+      - "80:80"
+      - "443:443"
+    volumes:
+      - ./Caddyfile:/etc/Caddyfile
+      - ./data/caddy:/data
+    depends_on:
+      - ezhik-ideas
+    restart: unless-stopped
