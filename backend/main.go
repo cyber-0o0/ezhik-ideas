@@ -1,10 +1,11 @@
 package main
 
 import (
+	"bytes"
+	"encoding/json"
 	"log"
 	"net/http"
 	"os"
-	"time"
 
 	"github.com/gin-gonic/gin"
 )
@@ -93,66 +94,54 @@ func sendFeedback(c *gin.Context) {
 	c.JSON(http.StatusOK, gin.H{"status": "ok"})
 }
 
+const GroqAPIKey = os.Getenv("GROQ_API_KEY")
+
+type GroqMessage struct {
+	Role    string `json:"role"`
+	Content string `json:"content"`
+}
+
+type GroqRequest struct {
+	Model    string        `json:"model"`
+	Messages []GroqMessage `json:"messages"`
+}
+
+type GroqResponse struct {
+	Choices []struct {
+		Message struct {
+			Content string `json:"content"`
+		} `json:"message"`
+	} `json:"choices"`
+}
+
 func generateIdea(category string) string {
-	ideas := map[string][]string{
-		"бизнес": {
-			"Сервис аренды инструментов для дачи и ремонта",
-			"Мобильное приложение для поиска попутчиков в своём городе",
-			"Платформа для обмена вещами между соседями",
-			"Автоматизированный магазин для малого бизнеса",
-			"Доставка продуктов с фермы",
-			"Онлайн-курсы по 3D-печати",
-		},
-		"3D-проект": {
-			"Набор 3D-моделей мебели в PSX-стиле для Unity",
-			"Виртуальная выставка произведений искусства",
-			"Интерактивная 3D-карта своего города",
-			"Модели для настольных игр с печатью",
-			"Ассеты для Roblox",
-			"Персонажи для инди-игр",
-			"Процедурный генератор заброшенных зданий",
-			"Набор sci-fi терминалов с анимацией",
-			"Лоу-поли пак еды и напитков для киоска",
-		},
-		"контент": {
-			"Серия коротких видео про жизнь программиста",
-			"Блог о 3D-моделировании для начинающих",
-			"Подкаст про крипту простыми словами",
-			"Telegram-канал с ежедневными идеями",
-			"Обзоры на бесплатные ассеты",
-		},
-		"приложение": {
-			"TODO-лист с геймификацией и достижениями",
-			"Трекер привычек с статистикой и мотивацией",
-			"Приложение для планирования путешествий",
-			"Бот для напоминаний о важных делах",
-			"Напоминалка про воду",
-		},
-		"крипта": {
-			"Анализатор портфеля с уведомлениями",
-			"Дашборд для отслеживания airdrops",
-			"Сервис для изучения DeFi через практику",
-			"Портфель NFT-арта с отслеживанием трендов",
-			"Калькулятор gas для Ethereum",
-			"Бот для мониторинга листинга новых токенов",
-			"Симулятор крипто-трейдинга для новичков",
-		},
-		"сайт": {
-			"Лендинг для фрилансера с портфолио",
-			"Сайт-визитка для мастера по ремонту",
-			"Блог-платформа с минималистичным дизайном",
-			"Сервис для создания резюме онлайн",
-			"Портфолио для 3D-художника",
+	client := &http.Client{}
+	prompt := "Generate a unique and creative project idea for the category: " + category + ". The idea should be innovative and interesting for an 18-year-old developer and 3D artist. Return only the idea text, no extra fluff."
+	
+	reqBody := GroqRequest{
+		Model: "llama-3.3-70b-versatile",
+		Messages: []GroqMessage{
+			{Role: "user", Content: prompt},
 		},
 	}
 	
-	categoryIdeas, ok := ideas[category]
-	if !ok {
-		categoryIdeas = ideas["бизнес"]
+	jsonData, _ := json.Marshal(reqBody)
+	req, _ := http.NewRequest("POST", "https://api.groq.com/openai/v1/chat/completions", bytes.NewBuffer(jsonData))
+	req.Header.Set("Authorization", "Bearer "+GroqAPIKey)
+	req.Header.Set("Content-Type", "application/json")
+	
+	resp, err := client.Do(req)
+	if err != nil {
+		return "Error generating idea: " + err.Error()
+	}
+	defer resp.Body.Close()
+	
+	var groqResp GroqResponse
+	json.NewDecoder(resp.Body).Decode(&groqResp)
+	
+	if len(groqResp.Choices) > 0 {
+		return groqResp.Choices[0].Message.Content
 	}
 	
-	now := time.Now()
-	idx := (now.UnixNano() / 1e9) % int64(len(categoryIdeas))
-	
-	return categoryIdeas[idx]
+	return "No idea generated today, try again!"
 }
