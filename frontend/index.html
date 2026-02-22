@@ -237,6 +237,7 @@
           <option value="маркетинг">📣 Маркетинг</option>
         </select>
         <button class="btn" id="generate-btn">Сгенерировать идею ✨</button>
+        <button class="btn btn-secondary" id="copy-btn" style="display:none;margin-top:10px;">📋 Копировать</button>
       </div>
       <div id="idea-result" class="result" style="display:none;"></div>
       <div class="card" id="history-card">
@@ -432,6 +433,7 @@
         );
         result.className = 'result';
         result.textContent = idea;
+        document.getElementById('copy-btn').style.display = 'block';
         stats.ideas++;
         saveStats();
       } catch(e) {
@@ -645,6 +647,15 @@
 
     // Init password
     generatePassword();
+
+    // Copy button
+    document.getElementById('copy-btn').addEventListener('click', () => {
+      const text = document.getElementById('idea-result').textContent;
+      navigator.clipboard.writeText(text);
+      const btn = document.getElementById('copy-btn');
+      btn.textContent = '✅ Скопировано!';
+      setTimeout(() => btn.textContent = '📋 Копировать', 2000);
+    });
   </script>
 </body>
 </html>
