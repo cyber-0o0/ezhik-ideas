@@ -1,12 +1,6 @@
 // Ezhik Ideas — Frontend App (Robust Version)
 
-// Smart API URL: use public IP if localhost (for Telegram Mini App stability)
-const API_URL = 
-  window.location.hostname === 'localhost' || 
-  window.location.hostname === '127.0.0.1' ||
-  window.location.hostname === 'web.telegram.org'
-    ? 'http://213.176.78.194:8080'
-    : window.location.origin;
+const API_URL = window.location.origin;
 
 // Telegram WebApp integration
 const Telegram = window.Telegram.WebApp;

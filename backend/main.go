@@ -8,6 +8,7 @@ import (
 	"os"
 
 	"github.com/gin-gonic/gin"
+	"github.com/joho/godotenv"
 )
 
 var statsCount int
@@ -33,6 +34,7 @@ type AIRequest struct {
 }
 
 func main() {
+	godotenv.Load("/root/.openclaw/workspace/ezhik-ideas/backend/.env")
 	// Setup router
 	r := gin.Default()
 	
@@ -119,6 +121,8 @@ func handleAI(c *gin.Context) {
 func callGroq(prompt, systemPrompt string) string {
 	client := &http.Client{}
 	
+	log.Println("GROQ_API_KEY:", GroqAPIKey)  // Debug
+	
 	reqBody := GroqRequest{
 		Model: "llama-3.3-70b-versatile",
 		Messages: []GroqMessage{
@@ -138,6 +142,8 @@ func callGroq(prompt, systemPrompt string) string {
 	}
 	defer resp.Body.Close()
 	
+	log.Println("Response status:", resp.StatusCode)  // Debug
+	
 	var groqResp GroqResponse
 	json.NewDecoder(resp.Body).Decode(&groqResp)
 	
@@ -148,7 +154,15 @@ func callGroq(prompt, systemPrompt string) string {
 	return "No response from AI"
 }
 
-var GroqAPIKey = os.Getenv("GROQ_API_KEY")
+var GroqAPIKey string
+
+func init() {
+	godotenv.Load()
+	GroqAPIKey = os.Getenv("GROQ_API_KEY")
+	if GroqAPIKey == "" {
+		log.Fatal("GROQ_API_KEY not set in environment or .env file")
+	}
+}
 
 type GroqMessage struct {
 	Role    string `json:"role"`
