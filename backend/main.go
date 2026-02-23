@@ -184,7 +184,14 @@ type GroqResponse struct {
 
 func generateIdea(category string) string {
 	client := &http.Client{}
-	prompt := "Generate a unique and creative project idea for the category: " + category + ". The idea should be innovative and interesting for an 18-year-old developer and 3D artist. Return only the idea text, no extra fluff."
+	
+	var prompt string
+	switch category {
+	case "psx":
+		prompt = "Generate a unique PSX-style 3D asset idea. Think retro low-poly aesthetic from PlayStation 1 era: pixelated textures, affine texture warping, no perspective correction, 16-bit color palette. Suggest specific objects like: retro electronics, vending machines, household items, packaging, street objects. Keep it practical for a solo 3D artist. Return only the idea text, no extra fluff."
+	default:
+		prompt = "Generate a unique and creative project idea for the category: " + category + ". The idea should be innovative and interesting for an 18-year-old developer and 3D artist. Return only the idea text, no extra fluff."
+	}
 	
 	reqBody := GroqRequest{
 		Model: "llama-3.3-70b-versatile",
