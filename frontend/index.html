@@ -207,6 +207,7 @@
     <button class="tab" data-tab="content">📰 Контент</button>
     <button class="tab" data-tab="random">🎲 Рандом</button>
     <button class="tab" data-tab="password">🔐 Пароли</button>
+    <button class="tab" data-tab="code">💻 Код</button>
   </div>
   
   <div class="content">
@@ -362,6 +363,23 @@
           </div>
         </div>
       </div>
+    </div>
+    
+    <!-- Код -->
+    <div class="tab-content" id="tab-code">
+      <div class="card">
+        <select id="code-language">
+          <option value="Python">🐍 Python</option>
+          <option value="Go">🔷 Go</option>
+          <option value="JavaScript">📜 JavaScript</option>
+          <option value="HTML/CSS">🌐 HTML/CSS</option>
+          <option value="Bash">💻 Bash</option>
+          <option value="SQL">🗄️ SQL</option>
+        </select>
+        <textarea id="code-task" placeholder="Опиши что нужно сделать...&#10;Например: функция для проверки email на Python"></textarea>
+        <button class="btn" id="code-btn">Сгенерировать код 💻</button>
+      </div>
+      <div id="code-result" class="result" style="display:none;max-height:400px;overflow:auto;"></div>
     </div>
   </div>
 
@@ -656,6 +674,38 @@
       const btn = document.getElementById('copy-btn');
       btn.textContent = '✅ Скопировано!';
       setTimeout(() => btn.textContent = '📋 Копировать', 2000);
+    });
+
+    // Code generator
+    document.getElementById('code-btn').addEventListener('click', async () => {
+      const btn = document.getElementById('code-btn');
+      const result = document.getElementById('code-result');
+      const language = document.getElementById('code-language').value;
+      const task = document.getElementById('code-task').value;
+      
+      if (!task) { result.textContent = 'Опиши задачу!'; result.style.display = 'block'; return; }
+      
+      btn.disabled = true;
+      btn.textContent = 'Пишу код... ⌨️';
+      result.style.display = 'block';
+      result.className = 'result loading';
+      result.textContent = 'Ежик кодит...';
+      
+      try {
+        const response = await fetch(API_URL + '/api/code', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ language, task })
+        });
+        if (!response.ok) throw new Error('API error');
+        const data = await response.json();
+        result.className = 'result';
+        result.textContent = data.code || data.error || 'Готово!';
+      } catch(e) {
+        result.textContent = 'Ошибка: ' + e.message;
+      }
+      btn.disabled = false;
+      btn.textContent = 'Сгенерировать код 💻';
     });
   </script>
 </body>

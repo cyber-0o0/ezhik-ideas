@@ -3,9 +3,14 @@ package main
 import (
 	"bytes"
 	"encoding/json"
+	"fmt"
+	"io"
 	"log"
 	"net/http"
 	"os"
+	"os/exec"
+	"path/filepath"
+	"time"
 
 	"github.com/gin-gonic/gin"
 	"github.com/joho/godotenv"
@@ -33,6 +38,11 @@ type AIRequest struct {
 	SystemPrompt string `json:"systemPrompt"`
 }
 
+type YouTubeRequest struct {
+	URL    string `json:"url" binding:"required"`
+	Quality string `json:"quality"` // "worst", "best", "audio"
+}
+
 func main() {
 	godotenv.Load("/root/.openclaw/workspace/ezhik-ideas/backend/.env")
 	// Setup router
@@ -55,6 +65,8 @@ func main() {
 	r.GET("/api/stats", getStats)
 	r.POST("/api/feedback", sendFeedback)
 	r.POST("/api/ai", handleAI)
+	r.POST("/api/youtube-dl", downloadYouTube)
+	r.POST("/api/code", generateCode)
 	
 	// Serve frontend
 	r.GET("/", func(c *gin.Context) {
@@ -74,6 +86,73 @@ func main() {
 	}
 	log.Printf("Server started on port %s", port)
 	r.Run("0.0.0.0:" + port)
+}
+
+func downloadYouTube(c *gin.Context) {
+	var req YouTubeRequest
+	if err := c.ShouldBindJSON(&req); err != nil {
+		c.JSON(http.StatusBadRequest, gin.H{"error": "URL is required"})
+		return
+	}
+
+	// Quality mapping
+	format := "worst[height<=720]"
+	if req.Quality == "best" {
+		format = "best[height<=1080]"
+	} else if req.Quality == "audio" {
+		format = "bestaudio"
+	}
+
+	// Create temp directory
+	tmpDir := "/tmp/ezhik-yt"
+	os.MkdirAll(tmpDir, 0755)
+	
+	// Generate unique filename
+	filename := fmt.Sprintf("video_%d.mp4", time.Now().Unix())
+	outputPath := filepath.Join(tmpDir, filename)
+
+	// Build yt-dlp command
+	cmd := exec.Command("yt-dlp", 
+		"-f", format,
+		"-o", outputPath,
+		"--no-warnings",
+		req.URL,
+	)
+
+	output, err := cmd.CombinedOutput()
+	if err != nil {
+		log.Printf("yt-dlp error: %s", string(output))
+		c.JSON(http.StatusInternalServerError, gin.H{"error": "Failed to download video: " + err.Error()})
+		return
+	}
+
+	// Check if file exists
+	if _, err := os.Stat(outputPath); os.IsNotExist(err) {
+		c.JSON(http.StatusInternalServerError, gin.H{"error": "Video file not found"})
+		return
+	}
+
+	// Open file
+	file, err := os.Open(outputPath)
+	if err != nil {
+		c.JSON(http.StatusInternalServerError, gin.H{"error": "Failed to open file"})
+		return
+	}
+	defer file.Close()
+
+	// Set headers for file download
+	videoName := filepath.Base(outputPath)
+	c.Header("Content-Disposition", fmt.Sprintf("attachment; filename=%s", videoName))
+	c.Header("Content-Type", "application/octet-stream")
+	
+	// Stream file to client
+	io.Copy(c.Writer, file)
+	
+	// Cleanup after sending
+	go func() {
+		time.Sleep(5 * time.Second)
+		os.Remove(outputPath)
+	}()
 }
 
 func getIdea(c *gin.Context) {
@@ -180,6 +259,48 @@ type GroqResponse struct {
 			Content string `json:"content"`
 		} `json:"message"`
 	} `json:"choices"`
+}
+
+func generateCode(c *gin.Context) {
+	var req struct {
+		Language string `json:"language"`
+		Task     string `json:"task"`
+	}
+	if err := c.ShouldBindJSON(&req); err != nil {
+		c.JSON(http.StatusBadRequest, gin.H{"error": "Invalid request"})
+		return
+	}
+
+	client := &http.Client{}
+	prompt := fmt.Sprintf("Generate working code in %s for: %s. Return only the code, no explanations. Include comments if needed. Make it complete and runnable.", req.Language, req.Task)
+
+	reqBody := GroqRequest{
+		Model: "llama-3.3-70b-versatile",
+		Messages: []GroqMessage{
+			{Role: "user", Content: prompt},
+		},
+	}
+
+	jsonData, _ := json.Marshal(reqBody)
+	httpReq, _ := http.NewRequest("POST", "https://api.groq.com/openai/v1/chat/completions", bytes.NewBuffer(jsonData))
+	httpReq.Header.Set("Authorization", "Bearer "+GroqAPIKey)
+	httpReq.Header.Set("Content-Type", "application/json")
+
+	resp, err := client.Do(httpReq)
+	if err != nil {
+		c.JSON(http.StatusInternalServerError, gin.H{"error": err.Error()})
+		return
+	}
+	defer resp.Body.Close()
+
+	var groqResp GroqResponse
+	json.NewDecoder(resp.Body).Decode(&groqResp)
+
+	if len(groqResp.Choices) > 0 {
+		c.JSON(http.StatusOK, gin.H{"code": groqResp.Choices[0].Message.Content})
+	} else {
+		c.JSON(http.StatusInternalServerError, gin.H{"error": "No response from AI"})
+	}
 }
 
 func generateIdea(category string) string {
