@@ -663,6 +663,26 @@ body, table, td { font-family: Arial, Helvetica, sans-serif; }
 			}
 			html += `</tr></table></td></tr>`
 
+		case "countdown":
+			title := "До конца акции осталось"
+			days := "03"
+			hours := "12"
+			minutes := "45"
+			if v, ok := data["title"].(string); ok { title = v }
+			if v, ok := data["days"].(string); ok { days = v }
+			if v, ok := data["hours"].(string); ok { hours = v }
+			if v, ok := data["minutes"].(string); ok { minutes = v }
+			html += `<tr><td style="background:white; padding:32px; text-align:center;">
+			<div style="font-size:16px; color:#666; margin-bottom:16px;">`+title+`</div>
+			<table role="presentation" cellpadding="0" cellspacing="0" border="0" width="100%"><tr>
+			<td align="center" width="80"><div style="font-size:32px; font-weight:bold; color:`+primary+`;">`+days+`</div><div style="font-size:12px; color:#999;">дней</div></td>
+			<td align="center" width="40"><div style="font-size:32px; color:#ccc;">:</div></td>
+			<td align="center" width="80"><div style="font-size:32px; font-weight:bold; color:`+primary+`;">`+hours+`</div><div style="font-size:12px; color:#999;">часов</div></td>
+			<td align="center" width="40"><div style="font-size:32px; color:#ccc;">:</div></td>
+			<td align="center" width="80"><div style="font-size:32px; font-weight:bold; color:`+primary+`;">`+minutes+`</div><div style="font-size:12px; color:#999;">минут</div></td>
+			</tr></table>
+			</td></tr>`
+
 		case "social":
 			networks := []map[string]interface{}{
 				{"type": "telegram", "link": "https://t.me/example"},

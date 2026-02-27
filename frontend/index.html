@@ -251,6 +251,7 @@
                         <span class="block-tag" data-type="faq">FAQ</span>
                         <span class="block-tag" data-type="video">Видео</span>
                         <span class="block-tag" data-type="gallery">Галерея</span>
+                        <span class="block-tag" data-type="countdown">Таймер</span>
                     </div>
                 </div>
                 
@@ -410,6 +411,11 @@
                         'https://via.placeholder.com/300x200',
                         'https://via.placeholder.com/300x200'
                     ];
+                } else if (type === 'countdown') {
+                    data.title = 'До конца акции осталось';
+                    data.days = '03';
+                    data.hours = '12';
+                    data.minutes = '45';
                 }
                 
                 return { type, data, enabled: true };
