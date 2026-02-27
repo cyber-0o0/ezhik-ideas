@@ -283,6 +283,7 @@
                         <span class="block-tag" data-type="youtube">YouTube</span>
                         <span class="block-tag" data-type="spotify">Spotify</span>
                         <span class="block-tag" data-type="discord">Discord</span>
+                        <span class="block-tag" data-type="whatsapp">WhatsApp</span>
                     </div>
                 </div>
                 
@@ -565,6 +566,9 @@
                 } else if (type === 'discord') {
                     data.name = 'Наш Discord сервер';
                     data.members = '5,000';
+                } else if (type === 'whatsapp') {
+                    data.phone = '79001234567';
+                    data.message = 'Привет! Хочу узнать больше...';
                 }
                 
                 return { type, data, enabled: true };

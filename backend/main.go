@@ -1132,6 +1132,15 @@ body, table, td { font-family: Arial, Helvetica, sans-serif; }
 			<a href="#" style="display:inline-block; background:white; color:#5865F2; padding:10px 24px; border-radius:4px; text-decoration:none; font-weight:bold;">Присоединиться</a>
 			</td></tr>`
 
+		case "whatsapp":
+			phone := "79001234567"
+			message := "Привет!"
+			html += `<tr><td style="background:white; padding:24px 32px; text-align:center;">
+			<a href="wa.me/` + phone + `?text=` + message + `" style="display:inline-block; background:#25D366; color:white; padding:14px 28px; text-decoration:none; border-radius:28px; font-weight:bold;">
+			💬 Написать в WhatsApp
+			</a>
+			</td></tr>`
+
 		case "social":
 			networks := []map[string]interface{}{
 				{"type": "telegram", "link": "https://t.me/example"},
