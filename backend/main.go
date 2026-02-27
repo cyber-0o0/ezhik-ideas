@@ -808,6 +808,11 @@ body, table, td { font-family: Arial, Helvetica, sans-serif; }
 			}
 			html += `</td></tr>`
 
+		case "html":
+			content := ""
+			if v, ok := data["content"].(string); ok { content = v }
+			html += `<tr><td style="background:white; padding:16px 32px;">` + content + `</td></tr>`
+
 		case "social":
 			networks := []map[string]interface{}{
 				{"type": "telegram", "link": "https://t.me/example"},

@@ -259,6 +259,7 @@
                         <span class="block-tag" data-type="columns">Колонки</span>
                         <span class="block-tag" data-type="alert">Уведомление</span>
                         <span class="block-tag" data-type="image">Картинка</span>
+                        <span class="block-tag" data-type="html">HTML</span>
                     </div>
                 </div>
                 
@@ -455,6 +456,8 @@
                     data.src = state.uploadedImage || 'https://via.placeholder.com/600x300';
                     data.alt = 'Изображение';
                     data.caption = '';
+                } else if (type === 'html') {
+                    data.content = '<div style="padding:16px; background:#f5f5f5; border-radius:4px;">Ваш HTML код здесь</div>';
                 }
                 
                 return { type, data, enabled: true };
