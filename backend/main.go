@@ -1015,6 +1015,16 @@ body, table, td { font-family: Arial, Helvetica, sans-serif; }
 			}
 			html += `</a></td></tr>`
 
+		case "share":
+			text := "Поделиться"
+			html += `<tr><td style="background:white; padding:24px 32px; text-align:center;">
+			<div style="font-size:14px; color:#666; margin-bottom:12px;">` + text + `</div>
+			<a href="#" style="display:inline-block; margin:0 8px; width:40px; height:40px; background:#4267B2; border-radius:50%; line-height:40px; color:white; text-decoration:none;">f</a>
+			<a href="#" style="display:inline-block; margin:0 8px; width:40px; height:40px; background:#1DA1F2; border-radius:50%; line-height:40px; color:white; text-decoration:none;">t</a>
+			<a href="#" style="display:inline-block; margin:0 8px; width:40px; height:40px; background:#0077B5; border-radius:50%; line-height:40px; color:white; text-decoration:none;">in</a>
+			<a href="#" style="display:inline-block; margin:0 8px; width:40px; height:40px; background:#E4405F; border-radius:50%; line-height:40px; color:white; text-decoration:none;">ig</a>
+			</td></tr>`
+
 		case "social":
 			networks := []map[string]interface{}{
 				{"type": "telegram", "link": "https://t.me/example"},
