@@ -270,6 +270,7 @@
                         <span class="block-tag" data-type="cards">Карточки</span>
                         <span class="block-tag" data-type="testimonial">Отзыв</span>
                         <span class="block-tag" data-type="stars">Рейтинг</span>
+                        <span class="block-tag" data-type="progress">Прогресс</span>
                     </div>
                 </div>
                 
@@ -511,6 +512,10 @@
                     data.role = 'Предприниматель';
                 } else if (type === 'stars') {
                     data.rating = '5';
+                } else if (type === 'progress') {
+                    data.current = '2';
+                    data.total = '3';
+                    data.title = 'Шаг 2 из 3';
                 }
                 
                 return { type, data, enabled: true };

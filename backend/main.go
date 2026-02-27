@@ -973,6 +973,21 @@ body, table, td { font-family: Arial, Helvetica, sans-serif; }
 			<div style="font-size:14px; color:#666;">Оценка: ` + rating + `/5</div>
 			</td></tr>`
 
+		case "progress":
+			current := "2"
+			total := "3"
+			title := "Шаг 2 из 3"
+			if v, ok := data["current"].(string); ok { current = v }
+			if v, ok := data["total"].(string); ok { total = v }
+			if v, ok := data["title"].(string); ok { title = v }
+			percent := 100 * (current[0]-'0') / (total[0]-'0')
+			html += `<tr><td style="background:white; padding:24px 32px;">
+			<div style="font-size:14px; color:#666; margin-bottom:8px;">` + title + `</div>
+			<div style="width:100%; height:8px; background:#e0e0e0; border-radius:4px;">
+			<div style="width:` + fmt.Sprintf("%d", percent) + `%; height:8px; background:` + accent + `; border-radius:4px;"></div>
+			</div>
+			</td></tr>`
+
 		case "social":
 			networks := []map[string]interface{}{
 				{"type": "telegram", "link": "https://t.me/example"},
