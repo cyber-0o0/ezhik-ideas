@@ -565,6 +565,24 @@ body, table, td { font-family: Arial, Helvetica, sans-serif; }
 			<div style="font-size:14px; color:#666; margin-top:16px; font-weight:bold;">— `+author+`</div>
 			</td></tr>`
 
+		case "event":
+			title := "Вебинар"
+			date := "15 марта 2026"
+			time := "18:00 МСК"
+			btnText := "Зарегистрироваться"
+			btnLink := "#"
+			if v, ok := data["title"].(string); ok { title = v }
+			if v, ok := data["date"].(string); ok { date = v }
+			if v, ok := data["time"].(string); ok { time = v }
+			if v, ok := data["button_text"].(string); ok { btnText = v }
+			if v, ok := data["button_link"].(string); ok { btnLink = v }
+			html += `<tr><td style="background:white; padding:32px; text-align:center;">
+			<div style="font-size:14px; color:#999; text-transform:uppercase; margin-bottom:8px;">Событие</div>
+			<div style="font-size:22px; font-weight:bold; color:`+primary+`; margin-bottom:16px;">`+title+`</div>
+			<div style="font-size:16px; color:#333; margin-bottom:8px;">📅 `+date+` · ⏰ `+time+`</div>
+			<a href="`+btnLink+`" style="display:inline-block; background:`+accent+`; color:white; padding:14px 28px; text-decoration:none; border-radius:4px; font-weight:bold; margin-top:16px;">`+btnText+`</a>
+			</td></tr>`
+
 		case "social":
 			networks := []map[string]interface{}{
 				{"type": "telegram", "link": "https://t.me/example"},

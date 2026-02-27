@@ -246,6 +246,7 @@
                         <span class="block-tag" data-type="divider">Разделитель</span>
                         <span class="block-tag" data-type="cta">CTA</span>
                         <span class="block-tag" data-type="quote">Цитата</span>
+                        <span class="block-tag" data-type="event">Событие</span>
                     </div>
                 </div>
                 
@@ -377,6 +378,12 @@
                 } else if (type === 'quote') {
                     data.text = 'Отличный продукт! Очень доволен.';
                     data.author = 'Иван Иванов';
+                } else if (type === 'event') {
+                    data.title = 'Вебинар: Как запустить бизнес';
+                    data.date = '15 марта 2026';
+                    data.time = '18:00 МСК';
+                    data.button_text = 'Зарегистрироваться';
+                    data.button_link = 'https://example.com';
                 }
                 
                 return { type, data, enabled: true };
