@@ -271,6 +271,7 @@
                         <span class="block-tag" data-type="testimonial">Отзыв</span>
                         <span class="block-tag" data-type="stars">Рейтинг</span>
                         <span class="block-tag" data-type="progress">Прогресс</span>
+                        <span class="block-tag" data-type="gift">Подарок</span>
                     </div>
                 </div>
                 
@@ -516,6 +517,10 @@
                     data.current = '2';
                     data.total = '3';
                     data.title = 'Шаг 2 из 3';
+                } else if (type === 'gift') {
+                    data.title = 'Подарок для вас!';
+                    data.description = 'Зарегистрируйтесь и получите бонус 500₽';
+                    data.icon = '🎁';
                 }
                 
                 return { type, data, enabled: true };

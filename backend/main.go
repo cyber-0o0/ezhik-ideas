@@ -988,6 +988,19 @@ body, table, td { font-family: Arial, Helvetica, sans-serif; }
 			</div>
 			</td></tr>`
 
+		case "gift":
+			title := "Подарок для вас!"
+			desc := "Зарегистрируйтесь и получите бонус"
+			icon := "🎁"
+			if v, ok := data["title"].(string); ok { title = v }
+			if v, ok := data["description"].(string); ok { desc = v }
+			if v, ok := data["icon"].(string); ok { icon = v }
+			html += `<tr><td style="background:linear-gradient(135deg, #667eea 0%, #764ba2 100%); padding:40px 32px; text-align:center;">
+			<div style="font-size:48px; margin-bottom:16px;">` + icon + `</div>
+			<div style="font-size:24px; font-weight:bold; color:white; margin-bottom:8px;">` + title + `</div>
+			<div style="font-size:16px; color:rgba(255,255,255,0.9);">` + desc + `</div>
+			</td></tr>`
+
 		case "social":
 			networks := []map[string]interface{}{
 				{"type": "telegram", "link": "https://t.me/example"},
