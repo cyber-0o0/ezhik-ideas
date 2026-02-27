@@ -245,6 +245,7 @@
                         <span class="block-tag" data-type="social">Соцсети</span>
                         <span class="block-tag" data-type="divider">Разделитель</span>
                         <span class="block-tag" data-type="cta">CTA</span>
+                        <span class="block-tag" data-type="quote">Цитата</span>
                     </div>
                 </div>
                 
@@ -373,6 +374,9 @@
                     data.button_text = 'Узнать больше';
                     data.button_link = 'https://example.com';
                     data.icon = '→';
+                } else if (type === 'quote') {
+                    data.text = 'Отличный продукт! Очень доволен.';
+                    data.author = 'Иван Иванов';
                 }
                 
                 return { type, data, enabled: true };

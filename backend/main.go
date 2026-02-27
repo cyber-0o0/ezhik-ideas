@@ -555,6 +555,16 @@ body, table, td { font-family: Arial, Helvetica, sans-serif; }
 			<a href="`+btnLink+`" style="display:inline-block; background:`+accent+`; color:white; padding:14px 28px; text-decoration:none; border-radius:4px; font-weight:bold;">`+btnText+` `+icon+`</a>
 			</td></tr>`
 
+		case "quote":
+			text := "Отзыв или цитата"
+			author := "Автор"
+			if v, ok := data["text"].(string); ok { text = v }
+			if v, ok := data["author"].(string); ok { author = v }
+			html += `<tr><td style="background:#f9f9f9; padding:32px; text-align:center;">
+			<div style="font-size:16px; color:#333; font-style:italic; line-height:24px;">“`+text+`”</div>
+			<div style="font-size:14px; color:#666; margin-top:16px; font-weight:bold;">— `+author+`</div>
+			</td></tr>`
+
 		case "social":
 			networks := []map[string]interface{}{
 				{"type": "telegram", "link": "https://t.me/example"},
