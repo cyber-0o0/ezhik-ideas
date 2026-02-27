@@ -265,6 +265,7 @@
                         <span class="block-tag" data-type="list">Список</span>
                         <span class="block-tag" data-type="survey">Опрос</span>
                         <span class="block-tag" data-type="download">Скачать</span>
+                        <span class="block-tag" data-type="footer2">Подвал</span>
                     </div>
                 </div>
                 
@@ -482,6 +483,11 @@
                     data.title = 'Скачать приложение';
                     data.ios = 'https://apps.apple.com';
                     data.android = 'https://play.google.com';
+                } else if (type === 'footer2') {
+                    data.company = 'ООО "Компания"';
+                    data.email = 'hello@example.com';
+                    data.phone = '+7 (999) 123-45-67';
+                    data.address = 'Москва, ул. Примерная 1';
                 }
                 
                 return { type, data, enabled: true };

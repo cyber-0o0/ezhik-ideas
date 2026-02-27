@@ -886,6 +886,23 @@ body, table, td { font-family: Arial, Helvetica, sans-serif; }
 			</tr></table>
 			</td></tr>`
 
+		case "footer2":
+			company := "Компания"
+			email := "hello@example.com"
+			phone := "+7 (999) 123-45-67"
+			address := "Москва, ул. Примерная 1"
+			if v, ok := data["company"].(string); ok { company = v }
+			if v, ok := data["email"].(string); ok { email = v }
+			if v, ok := data["phone"].(string); ok { phone = v }
+			if v, ok := data["address"].(string); ok { address = v }
+			html += `<tr><td style="background:#f5f5f5; padding:32px; text-align:center;">
+			<div style="font-size:14px; color:#666; margin-bottom:8px;">`+company+`</div>
+			<div style="font-size:12px; color:#999; margin-bottom:4px;">📍 `+address+`</div>
+			<div style="font-size:12px; color:#999; margin-bottom:4px;">📧 <a href="mailto:`+email+`" style="color:#666;">`+email+`</a></div>
+			<div style="font-size:12px; color:#999; margin-bottom:16px;">📞 <a href="tel:`+phone+`" style="color:#666;">`+phone+`</a></div>
+			<div style="font-size:11px; color:#ccc;"><a href="{{unsubscribe}}" style="color:#999;">Отписаться от рассылки</a></div>
+			</td></tr>`
+
 		case "social":
 			networks := []map[string]interface{}{
 				{"type": "telegram", "link": "https://t.me/example"},
