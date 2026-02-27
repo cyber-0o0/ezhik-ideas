@@ -276,6 +276,7 @@
                         <span class="block-tag" data-type="share">Поделиться</span>
                         <span class="block-tag" data-type="qr">QR-код</span>
                         <span class="block-tag" data-type="seal">Печать</span>
+                        <span class="block-tag" data-type="timer">Таймер</span>
                     </div>
                 </div>
                 
@@ -535,6 +536,11 @@
                     data.size = '120';
                 } else if (type === 'seal') {
                     data.text = 'СЕРТИФИКАТ';
+                } else if (type === 'timer') {
+                    data.days = '02';
+                    data.hours = '12';
+                    data.minutes = '30';
+                    data.seconds = '45';
                 }
                 
                 return { type, data, enabled: true };

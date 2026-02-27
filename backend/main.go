@@ -1045,6 +1045,27 @@ body, table, td { font-family: Arial, Helvetica, sans-serif; }
 			</div>
 			</td></tr>`
 
+		case "timer":
+			days := "02"
+			hours := "12"
+			minutes := "30"
+			seconds := "45"
+			if v, ok := data["days"].(string); ok { days = v }
+			if v, ok := data["hours"].(string); ok { hours = v }
+			if v, ok := data["minutes"].(string); ok { minutes = v }
+			if v, ok := data["seconds"].(string); ok { seconds = v }
+			html += `<tr><td style="background:#1a1a2e; padding:32px; text-align:center;">
+			<table role="presentation" cellpadding="0" cellspacing="0" border="0" width="100%"><tr>
+			<td align="center"><div style="font-size:36px; font-weight:bold; color:white;">` + days + `</div><div style="font-size:12px; color:#888;">дней</div></td>
+			<td align="center"><div style="font-size:24px; color:#555;">:</div></td>
+			<td align="center"><div style="font-size:36px; font-weight:bold; color:white;">` + hours + `</div><div style="font-size:12px; color:#888;">часов</div></td>
+			<td align="center"><div style="font-size:24px; color:#555;">:</div></td>
+			<td align="center"><div style="font-size:36px; font-weight:bold; color:white;">` + minutes + `</div><div style="font-size:12px; color:#888;">минут</div></td>
+			<td align="center"><div style="font-size:24px; color:#555;">:</div></td>
+			<td align="center"><div style="font-size:36px; font-weight:bold; color:` + accent + `;">` + seconds + `</div><div style="font-size:12px; color:#888;">секунд</div></td>
+			</tr></table>
+			</td></tr>`
+
 		case "social":
 			networks := []map[string]interface{}{
 				{"type": "telegram", "link": "https://t.me/example"},
