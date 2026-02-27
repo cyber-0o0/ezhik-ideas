@@ -646,6 +646,23 @@ body, table, td { font-family: Arial, Helvetica, sans-serif; }
 				</td></tr>`
 			}
 
+		case "gallery":
+			images, _ := data["images"].([]interface{})
+			if len(images) == 0 {
+				images = []interface{}{
+					"https://via.placeholder.com/300x200",
+					"https://via.placeholder.com/300x200",
+					"https://via.placeholder.com/300x200",
+				}
+			}
+			html += `<tr><td style="background:white; padding:32px;"><table role="presentation" cellpadding="0" cellspacing="0" border="0" width="100%"><tr>`
+			for i, img := range images {
+				if i > 0 && i%3 == 0 { html += `</tr><tr>` }
+				if i%3 > 0 { html += `<td style="width:8px;"></td>` }
+				html += `<td align="center" width="180"><img src="`+img.(string)+`" width="180" height="120" style="display:block; border-radius:4px;"></td>`
+			}
+			html += `</tr></table></td></tr>`
+
 		case "social":
 			networks := []map[string]interface{}{
 				{"type": "telegram", "link": "https://t.me/example"},

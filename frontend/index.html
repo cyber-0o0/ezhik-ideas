@@ -250,6 +250,7 @@
                         <span class="block-tag" data-type="stats">Статистика</span>
                         <span class="block-tag" data-type="faq">FAQ</span>
                         <span class="block-tag" data-type="video">Видео</span>
+                        <span class="block-tag" data-type="gallery">Галерея</span>
                     </div>
                 </div>
                 
@@ -403,6 +404,12 @@
                     data.description = 'Описание вашего видео';
                     data.link = 'https://youtube.com/watch?v=xxx';
                     data.thumbnail = '';
+                } else if (type === 'gallery') {
+                    data.images = [
+                        'https://via.placeholder.com/300x200',
+                        'https://via.placeholder.com/300x200',
+                        'https://via.placeholder.com/300x200'
+                    ];
                 }
                 
                 return { type, data, enabled: true };
