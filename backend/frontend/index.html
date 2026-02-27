@@ -253,6 +253,7 @@
                         <span class="block-tag" data-type="gallery">Галерея</span>
                         <span class="block-tag" data-type="countdown">Таймер</span>
                         <span class="block-tag" data-type="banner">Баннер</span>
+                        <span class="block-tag" data-type="features">Фичи</span>
                     </div>
                 </div>
                 
@@ -423,6 +424,12 @@
                     data.background = '#1a1a2e';
                     data.button_text = 'Получить скидку';
                     data.button_link = 'https://example.com';
+                } else if (type === 'features') {
+                    data.items = [
+                        { icon: '🚀', title: 'Быстро', desc: 'Работает мгновенно' },
+                        { icon: '🔒', title: 'Безопасно', desc: 'Ваши данные защищены' },
+                        { icon: '💎', title: 'Качественно', desc: 'Лучшие материалы' }
+                    ];
                 }
                 
                 return { type, data, enabled: true };

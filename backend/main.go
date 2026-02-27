@@ -700,6 +700,31 @@ body, table, td { font-family: Arial, Helvetica, sans-serif; }
 			<a href="`+btnLink+`" style="display:inline-block; background:white; color:`+bg+`; padding:14px 32px; text-decoration:none; border-radius:4px; font-weight:bold;">`+btnText+`</a>
 			</td></tr>`
 
+		case "features":
+			items, _ := data["items"].([]interface{})
+			if len(items) == 0 {
+				items = []interface{}{
+					map[string]interface{}{"icon": "🚀", "title": "Быстро", "desc": "Работает мгновенно"},
+					map[string]interface{}{"icon": "🔒", "title": "Безопасно", "desc": "Ваши данные защищены"},
+					map[string]interface{}{"icon": "💎", "title": "Качественно", "desc": "Лучшие материалы"},
+				}
+			}
+			html += `<tr><td style="background:white; padding:32px;"><table role="presentation" cellpadding="0" cellspacing="0" border="0" width="100%"><tr>`
+			for i, item := range items {
+				if i > 0 && i%3 == 0 { html += `</tr><tr>` }
+				if i%3 > 0 { html += `<td style="width:16px;"></td>` }
+				itemMap, _ := item.(map[string]interface{})
+				icon := getString(itemMap, "icon", "✓")
+				title := getString(itemMap, "title", "Фича")
+				desc := getString(itemMap, "desc", "Описание")
+				html += `<td align="center" valign="top" width="180">
+				<div style="font-size:32px; margin-bottom:8px;">`+icon+`</div>
+				<div style="font-size:16px; font-weight:bold; color:`+primary+`; margin-bottom:4px;">`+title+`</div>
+				<div style="font-size:13px; color:#666; line-height:18px;">`+desc+`</div>
+				</td>`
+			}
+			html += `</tr></table></td></tr>`
+
 		case "social":
 			networks := []map[string]interface{}{
 				{"type": "telegram", "link": "https://t.me/example"},
