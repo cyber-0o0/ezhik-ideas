@@ -244,6 +244,7 @@
                         <span class="block-tag" data-type="products">Товары</span>
                         <span class="block-tag" data-type="social">Соцсети</span>
                         <span class="block-tag" data-type="divider">Разделитель</span>
+                        <span class="block-tag" data-type="cta">CTA</span>
                     </div>
                 </div>
                 
@@ -366,6 +367,12 @@
                     ];
                 } else if (type === 'divider') {
                     data.color = '#e0e0e0';
+                } else if (type === 'cta') {
+                    data.title = 'Заголовок';
+                    data.description = 'Описание вашего предложения';
+                    data.button_text = 'Узнать больше';
+                    data.button_link = 'https://example.com';
+                    data.icon = '→';
                 }
                 
                 return { type, data, enabled: true };
