@@ -258,6 +258,7 @@
                         <span class="block-tag" data-type="spacer">Отступ</span>
                         <span class="block-tag" data-type="columns">Колонки</span>
                         <span class="block-tag" data-type="alert">Уведомление</span>
+                        <span class="block-tag" data-type="image">Картинка</span>
                     </div>
                 </div>
                 
@@ -450,6 +451,10 @@
                 } else if (type === 'alert') {
                     data.text = 'Новая коллекция уже доступна!';
                     data.type = 'info';
+                } else if (type === 'image') {
+                    data.src = state.uploadedImage || 'https://via.placeholder.com/600x300';
+                    data.alt = 'Изображение';
+                    data.caption = '';
                 }
                 
                 return { type, data, enabled: true };

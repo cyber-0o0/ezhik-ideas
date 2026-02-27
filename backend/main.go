@@ -792,6 +792,22 @@ body, table, td { font-family: Arial, Helvetica, sans-serif; }
 			<span style="font-size:16px;">`+icon+`</span> <span style="color:`+color+`; margin-left:8px;">`+text+`</span>
 			</td></tr>`
 
+		case "image":
+			src := ""
+			alt := "Изображение"
+			caption := ""
+			if v, ok := data["src"].(string); ok { src = v }
+			if v, ok := data["alt"].(string); ok { alt = v }
+			if v, ok := data["caption"].(string); ok { caption = v }
+			html += `<tr><td style="background:white; padding:16px 32px; text-align:center;">`
+			if src != "" {
+				html += `<img src="`+src+`" alt="`+alt+`" style="max-width:100%; height:auto; border-radius:4px;">`
+			}
+			if caption != "" {
+				html += `<div style="font-size:12px; color:#999; margin-top:8px;">`+caption+`</div>`
+			}
+			html += `</td></tr>`
+
 		case "social":
 			networks := []map[string]interface{}{
 				{"type": "telegram", "link": "https://t.me/example"},
