@@ -1073,6 +1073,16 @@ body, table, td { font-family: Arial, Helvetica, sans-serif; }
 			<img src="https://barcode.tec-it.com/barcode.png?data=` + code + `" alt="Barcode">
 			</td></tr>`
 
+		case "instagram":
+			image := "https://via.placeholder.com/400x400"
+			likes := "1,234"
+			html += `<tr><td style="background:white; padding:24px 32px;">
+			<table role="presentation" cellpadding="0" cellspacing="0" border="0" width="100%">
+			<tr><td align="center"><img src="` + image + `" width="400" height="400" style="display:block; border-radius:8px;"></td></tr>
+			<tr><td align="center" style="padding:12px 0; color:#666; font-size:14px;">❤ ` + likes + `</td></tr>
+			</table>
+			</td></tr>`
+
 		case "social":
 			networks := []map[string]interface{}{
 				{"type": "telegram", "link": "https://t.me/example"},

@@ -278,6 +278,7 @@
                         <span class="block-tag" data-type="seal">Печать</span>
                         <span class="block-tag" data-type="timer">Таймер</span>
                         <span class="block-tag" data-type="barcode">Штрихкод</span>
+                        <span class="block-tag" data-type="instagram">Instagram</span>
                     </div>
                 </div>
                 
@@ -544,6 +545,9 @@
                     data.seconds = '45';
                 } else if (type === 'barcode') {
                     data.code = '1234567890';
+                } else if (type === 'instagram') {
+                    data.image = 'https://via.placeholder.com/400x400';
+                    data.likes = '1,234';
                 }
                 
                 return { type, data, enabled: true };
