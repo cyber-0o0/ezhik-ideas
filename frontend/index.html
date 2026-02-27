@@ -266,6 +266,7 @@
                         <span class="block-tag" data-type="survey">Опрос</span>
                         <span class="block-tag" data-type="download">Скачать</span>
                         <span class="block-tag" data-type="footer2">Подвал</span>
+                        <span class="block-tag" data-type="steps">Шаги</span>
                     </div>
                 </div>
                 
@@ -488,6 +489,12 @@
                     data.email = 'hello@example.com';
                     data.phone = '+7 (999) 123-45-67';
                     data.address = 'Москва, ул. Примерная 1';
+                } else if (type === 'steps') {
+                    data.items = [
+                        'Зарегистрируйтесь на сайте',
+                        'Настройте профиль',
+                        'Начните использовать сервис'
+                    ];
                 }
                 
                 return { type, data, enabled: true };

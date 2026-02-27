@@ -903,6 +903,22 @@ body, table, td { font-family: Arial, Helvetica, sans-serif; }
 			<div style="font-size:11px; color:#ccc;"><a href="{{unsubscribe}}" style="color:#999;">Отписаться от рассылки</a></div>
 			</td></tr>`
 
+		case "steps":
+			items, _ := data["items"].([]interface{})
+			if len(items) == 0 {
+				items = []interface{}{
+					"Шаг 1: Зарегистрируйтесь",
+					"Шаг 2: Настройте профиль",
+					"Шаг 3: Начните использовать",
+				}
+			}
+			html += `<tr><td style="background:white; padding:32px;">`
+			for i, item := range items {
+				itemStr, _ := item.(string)
+				html += `<div style="margin-bottom:16px;"><span style="display:inline-block; width:28px; height:28px; background:`+accent+`; color:white; border-radius:50%; text-align:center; line-height:28px; font-size:14px; font-weight:bold; margin-right:12px;">`+fmt.Sprintf("%d", i+1)+`</span><span style="font-size:14px; color:#333; vertical-align:middle;">`+itemStr+`</span></div>`
+			}
+			html += `</td></tr>`
+
 		case "social":
 			networks := []map[string]interface{}{
 				{"type": "telegram", "link": "https://t.me/example"},
