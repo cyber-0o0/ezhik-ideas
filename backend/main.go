@@ -1083,6 +1083,19 @@ body, table, td { font-family: Arial, Helvetica, sans-serif; }
 			</table>
 			</td></tr>`
 
+		case "telegram":
+			name := "Канал"
+			desc := "Описание канала"
+			members := "1,000"
+			html += `<tr><td style="background:white; padding:24px 32px; text-align:center;">
+			<div style="width:60px; height:60px; background:#229ED9; border-radius:50%; display:inline-flex; align-items:center; justify-content:center; margin-bottom:12px;">
+			<span style="color:white; font-size:28px;">✈</span>
+			</div>
+			<div style="font-size:16px; font-weight:bold; color:` + primary + `; margin-bottom:4px;">` + name + `</div>
+			<div style="font-size:14px; color:#666; margin-bottom:8px;">` + desc + `</div>
+			<div style="font-size:12px; color:#999;">👥 ` + members + ` подписчиков</div>
+			</td></tr>`
+
 		case "social":
 			networks := []map[string]interface{}{
 				{"type": "telegram", "link": "https://t.me/example"},
