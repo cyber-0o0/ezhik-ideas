@@ -602,6 +602,23 @@ body, table, td { font-family: Arial, Helvetica, sans-serif; }
 			}
 			html += `</tr></table></td></tr>`
 
+		case "faq":
+			items, _ := data["items"].([]interface{})
+			if len(items) == 0 {
+				items = []interface{}{
+					map[string]interface{}{"question": "Как это работает?", "answer": "Очень просто!"},
+					map[string]interface{}{"question": "Сколько стоит?", "answer": "Есть бесплатный тариф"},
+				}
+			}
+			html += `<tr><td style="background:white; padding:32px;">`
+			for _, item := range items {
+				itemMap, _ := item.(map[string]interface{})
+				q := getString(itemMap, "question", "Вопрос")
+				a := getString(itemMap, "answer", "Ответ")
+				html += `<div style="margin-bottom:16px;"><div style="font-size:16px; font-weight:bold; color:`+primary+`; margin-bottom:4px;">❓ `+q+`</div><div style="font-size:14px; color:#666; line-height:20px;">`+a+`</div></div>`
+			}
+			html += `</td></tr>`
+
 		case "social":
 			networks := []map[string]interface{}{
 				{"type": "telegram", "link": "https://t.me/example"},

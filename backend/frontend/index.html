@@ -248,6 +248,7 @@
                         <span class="block-tag" data-type="quote">Цитата</span>
                         <span class="block-tag" data-type="event">Событие</span>
                         <span class="block-tag" data-type="stats">Статистика</span>
+                        <span class="block-tag" data-type="faq">FAQ</span>
                     </div>
                 </div>
                 
@@ -390,6 +391,11 @@
                         { value: '10K+', label: 'Пользователей' },
                         { value: '99%', label: 'Uptime' },
                         { value: '24/7', label: 'Поддержка' }
+                    ];
+                } else if (type === 'faq') {
+                    data.items = [
+                        { question: 'Как это работает?', answer: 'Очень просто! Зарегистрируйтесь и начните использовать.' },
+                        { question: 'Сколько стоит?', answer: 'Есть бесплатный тариф. Pro — от 990₽/мес.' }
                     ];
                 }
                 
