@@ -858,6 +858,19 @@ body, table, td { font-family: Arial, Helvetica, sans-serif; }
 			}
 			html += `</table></td></tr>`
 
+		case "survey":
+			question := "Как вам наш сервис?"
+			if v, ok := data["question"].(string); ok { question = v }
+			html += `<tr><td style="background:white; padding:32px; text-align:center;">
+			<div style="font-size:16px; color:#333; margin-bottom:16px;">`+question+`</div>
+			<div>
+			<span style="display:inline-block; padding:8px 16px; margin:4px; border:1px solid #ddd; border-radius:4px; cursor:pointer;">😟</span>
+			<span style="display:inline-block; padding:8px 16px; margin:4px; border:1px solid #ddd; border-radius:4px; cursor:pointer;">😐</span>
+			<span style="display:inline-block; padding:8px 16px; margin:4px; border:1px solid #ddd; border-radius:4px; cursor:pointer;">🙂</span>
+			<span style="display:inline-block; padding:8px 16px; margin:4px; border:1px solid #ddd; border-radius:4px; cursor:pointer;">😍</span>
+			</div>
+			</td></tr>`
+
 		case "social":
 			networks := []map[string]interface{}{
 				{"type": "telegram", "link": "https://t.me/example"},
