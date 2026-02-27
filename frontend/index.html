@@ -285,6 +285,7 @@
                         <span class="block-tag" data-type="discord">Discord</span>
                         <span class="block-tag" data-type="whatsapp">WhatsApp</span>
                         <span class="block-tag" data-type="twitch">Twitch</span>
+                        <span class="block-tag" data-type="soundcloud">SoundCloud</span>
                     </div>
                 </div>
                 
@@ -573,6 +574,8 @@
                 } else if (type === 'twitch') {
                     data.streamer = 'Название канала';
                     data.viewers = '5,000';
+                } else if (type === 'soundcloud') {
+                    data.track = 'Название трека';
                 }
                 
                 return { type, data, enabled: true };

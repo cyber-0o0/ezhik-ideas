@@ -1151,6 +1151,17 @@ body, table, td { font-family: Arial, Helvetica, sans-serif; }
 			<a href="#" style="display:inline-block; background:white; color:#9146FF; padding:10px 24px; border-radius:4px; text-decoration:none; font-weight:bold;">Смотреть</a>
 			</td></tr>`
 
+		case "soundcloud":
+			track := "Название трека"
+			html += `<tr><td style="background:#ff5500; padding:24px 32px;">
+			<table role="presentation" cellpadding="0" cellspacing="0" border="0" width="100%">
+			<tr><td style="background:#333; padding:12px; border-radius:4px;">
+			<div style="color:white; font-size:14px; font-weight:bold;">` + track + `</div>
+			<div style="color:#ccc; font-size:12px; margin-top:4px;">▶ 0:00 / 3:45</div>
+			</td></tr>
+			</table>
+			</td></tr>`
+
 		case "social":
 			networks := []map[string]interface{}{
 				{"type": "telegram", "link": "https://t.me/example"},
