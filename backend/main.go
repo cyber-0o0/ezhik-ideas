@@ -619,6 +619,33 @@ body, table, td { font-family: Arial, Helvetica, sans-serif; }
 			}
 			html += `</td></tr>`
 
+		case "video":
+			title := "Видео"
+			desc := "Описание видео"
+			thumbnail := ""
+			videoLink := "https://youtube.com"
+			if v, ok := data["title"].(string); ok { title = v }
+			if v, ok := data["description"].(string); ok { desc = v }
+			if v, ok := data["thumbnail"].(string); ok { thumbnail = v }
+			if v, ok := data["link"].(string); ok { videoLink = v }
+			playBtn := `<div style="width:60px; height:60px; background:rgba(0,0,0,0.7); border-radius:50%; display:inline-block; text-align:center; line-height:60px; color:white; font-size:24px;">▶</div>`
+			if thumbnail != "" {
+				html += `<tr><td style="background:white; padding:32px; text-align:center;">
+				<a href="`+videoLink+`" style="display:inline-block; position:relative;">
+				<img src="`+thumbnail+`" width="500" height="280" style="display:block; border-radius:8px;">
+				<div style="position:absolute; top:50%; left:50%; transform:translate(-50%,-50%);">`+playBtn+`</div>
+				</a>
+				<div style="font-size:18px; font-weight:bold; color:`+primary+`; margin-top:16px;">`+title+`</div>
+				<div style="color:#666; margin-top:8px;">`+desc+`</div>
+				</td></tr>`
+			} else {
+				html += `<tr><td style="background:white; padding:32px; text-align:center;">
+				<a href="`+videoLink+`" style="display:inline-block;">`+playBtn+`</a>
+				<div style="font-size:18px; font-weight:bold; color:`+primary+`; margin-top:16px;">`+title+`</div>
+				<div style="color:#666; margin-top:8px;">`+desc+`</div>
+				</td></tr>`
+			}
+
 		case "social":
 			networks := []map[string]interface{}{
 				{"type": "telegram", "link": "https://t.me/example"},

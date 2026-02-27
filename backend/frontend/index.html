@@ -249,6 +249,7 @@
                         <span class="block-tag" data-type="event">Событие</span>
                         <span class="block-tag" data-type="stats">Статистика</span>
                         <span class="block-tag" data-type="faq">FAQ</span>
+                        <span class="block-tag" data-type="video">Видео</span>
                     </div>
                 </div>
                 
@@ -397,6 +398,11 @@
                         { question: 'Как это работает?', answer: 'Очень просто! Зарегистрируйтесь и начните использовать.' },
                         { question: 'Сколько стоит?', answer: 'Есть бесплатный тариф. Pro — от 990₽/мес.' }
                     ];
+                } else if (type === 'video') {
+                    data.title = 'Название видео';
+                    data.description = 'Описание вашего видео';
+                    data.link = 'https://youtube.com/watch?v=xxx';
+                    data.thumbnail = '';
                 }
                 
                 return { type, data, enabled: true };
