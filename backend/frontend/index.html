@@ -277,6 +277,7 @@
                         <span class="block-tag" data-type="qr">QR-код</span>
                         <span class="block-tag" data-type="seal">Печать</span>
                         <span class="block-tag" data-type="timer">Таймер</span>
+                        <span class="block-tag" data-type="barcode">Штрихкод</span>
                     </div>
                 </div>
                 
@@ -541,6 +542,8 @@
                     data.hours = '12';
                     data.minutes = '30';
                     data.seconds = '45';
+                } else if (type === 'barcode') {
+                    data.code = '1234567890';
                 }
                 
                 return { type, data, enabled: true };

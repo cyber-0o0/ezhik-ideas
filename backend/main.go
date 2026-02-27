@@ -1066,6 +1066,13 @@ body, table, td { font-family: Arial, Helvetica, sans-serif; }
 			</tr></table>
 			</td></tr>`
 
+		case "barcode":
+			code := "1234567890"
+			if v, ok := data["code"].(string); ok { code = v }
+			html += `<tr><td style="background:white; padding:24px 32px; text-align:center;">
+			<img src="https://barcode.tec-it.com/barcode.png?data=` + code + `" alt="Barcode">
+			</td></tr>`
+
 		case "social":
 			networks := []map[string]interface{}{
 				{"type": "telegram", "link": "https://t.me/example"},
