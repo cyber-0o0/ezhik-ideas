@@ -1141,6 +1141,16 @@ body, table, td { font-family: Arial, Helvetica, sans-serif; }
 			</a>
 			</td></tr>`
 
+		case "twitch":
+			streamer := "Название"
+		 viewers := "1,000"
+			html += `<tr><td style="background:#9146FF; padding:24px 32px; text-align:center;">
+			<div style="font-size:32px; margin-bottom:8px;">🎮</div>
+			<div style="font-size:18px; font-weight:bold; color:white; margin-bottom:4px;">` + streamer + `</div>
+			<div style="font-size:14px; color:rgba(255,255,255,0.8); margin-bottom:12px;">🔴 В эфире · 👁 ` + viewers + ` зрителей</div>
+			<a href="#" style="display:inline-block; background:white; color:#9146FF; padding:10px 24px; border-radius:4px; text-decoration:none; font-weight:bold;">Смотреть</a>
+			</td></tr>`
+
 		case "social":
 			networks := []map[string]interface{}{
 				{"type": "telegram", "link": "https://t.me/example"},

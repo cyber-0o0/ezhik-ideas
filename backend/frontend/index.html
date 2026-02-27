@@ -284,6 +284,7 @@
                         <span class="block-tag" data-type="spotify">Spotify</span>
                         <span class="block-tag" data-type="discord">Discord</span>
                         <span class="block-tag" data-type="whatsapp">WhatsApp</span>
+                        <span class="block-tag" data-type="twitch">Twitch</span>
                     </div>
                 </div>
                 
@@ -569,6 +570,9 @@
                 } else if (type === 'whatsapp') {
                     data.phone = '79001234567';
                     data.message = 'Привет! Хочу узнать больше...';
+                } else if (type === 'twitch') {
+                    data.streamer = 'Название канала';
+                    data.viewers = '5,000';
                 }
                 
                 return { type, data, enabled: true };
