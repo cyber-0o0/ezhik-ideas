@@ -813,6 +813,21 @@ body, table, td { font-family: Arial, Helvetica, sans-serif; }
 			if v, ok := data["content"].(string); ok { content = v }
 			html += `<tr><td style="background:white; padding:16px 32px;">` + content + `</td></tr>`
 
+		case "form":
+			title := "Оставьте email"
+			placeholder := "Ваш email"
+			buttonText := "Отправить"
+			if v, ok := data["title"].(string); ok { title = v }
+			if v, ok := data["placeholder"].(string); ok { placeholder = v }
+			if v, ok := data["button"].(string); ok { buttonText = v }
+			html += `<tr><td style="background:white; padding:32px; text-align:center;">
+			<div style="font-size:18px; font-weight:bold; color:`+primary+`; margin-bottom:16px;">`+title+`</div>
+			<form style="margin:0;">
+			<input type="email" placeholder="`+placeholder+`" style="width:70%; padding:12px; border:1px solid #ddd; border-radius:4px; font-size:14px;">
+			<button type="submit" style="width:25%; padding:12px; background:`+accent+`; color:white; border:none; border-radius:4px; font-size:14px; font-weight:bold; cursor:pointer;">`+buttonText+`</button>
+			</form>
+			</td></tr>`
+
 		case "social":
 			networks := []map[string]interface{}{
 				{"type": "telegram", "link": "https://t.me/example"},

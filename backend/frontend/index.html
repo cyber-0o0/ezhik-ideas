@@ -260,6 +260,7 @@
                         <span class="block-tag" data-type="alert">Уведомление</span>
                         <span class="block-tag" data-type="image">Картинка</span>
                         <span class="block-tag" data-type="html">HTML</span>
+                        <span class="block-tag" data-type="form">Форма</span>
                     </div>
                 </div>
                 
@@ -458,6 +459,10 @@
                     data.caption = '';
                 } else if (type === 'html') {
                     data.content = '<div style="padding:16px; background:#f5f5f5; border-radius:4px;">Ваш HTML код здесь</div>';
+                } else if (type === 'form') {
+                    data.title = 'Оставьте email и получите скидку';
+                    data.placeholder = 'Ваш email';
+                    data.button = 'Отправить';
                 }
                 
                 return { type, data, enabled: true };
