@@ -269,6 +269,7 @@
                         <span class="block-tag" data-type="steps">Шаги</span>
                         <span class="block-tag" data-type="cards">Карточки</span>
                         <span class="block-tag" data-type="testimonial">Отзыв</span>
+                        <span class="block-tag" data-type="stars">Рейтинг</span>
                     </div>
                 </div>
                 
@@ -508,6 +509,8 @@
                     data.text = 'Отличный сервис! Всё работает как часы. Рекомендую!';
                     data.avatar = 'https://via.placeholder.com/60';
                     data.role = 'Предприниматель';
+                } else if (type === 'stars') {
+                    data.rating = '5';
                 }
                 
                 return { type, data, enabled: true };

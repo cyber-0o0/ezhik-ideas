@@ -957,6 +957,22 @@ body, table, td { font-family: Arial, Helvetica, sans-serif; }
 			<div style="font-size:12px; color:#999;">` + role + `</div>
 			</td></tr>`
 
+		case "stars":
+			rating := "5"
+			if v, ok := data["rating"].(string); ok { rating = v }
+			html += `<tr><td style="background:white; padding:24px; text-align:center;">
+			<div style="font-size:32px; margin-bottom:8px;">`
+			for i := 0; i < 5; i++ {
+				if i < 3 {
+					html += `⭐`
+				} else {
+					html += `☆`
+				}
+			}
+			html += `</div>
+			<div style="font-size:14px; color:#666;">Оценка: ` + rating + `/5</div>
+			</td></tr>`
+
 		case "social":
 			networks := []map[string]interface{}{
 				{"type": "telegram", "link": "https://t.me/example"},
