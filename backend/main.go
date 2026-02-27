@@ -828,6 +828,20 @@ body, table, td { font-family: Arial, Helvetica, sans-serif; }
 			</form>
 			</td></tr>`
 
+		case "badge":
+			text := "NEW"
+			badgeType := "new"
+			if v, ok := data["text"].(string); ok { text = v }
+			if v, ok := data["type"].(string); ok { badgeType = v }
+			bg := "#2196f3"
+			if badgeType == "sale" { bg = "#f44336" }
+			if badgeType == "hot" { bg = "#ff9800" }
+			if badgeType == "popular" { bg = "#9c27b0" }
+			if badgeType == "success" { bg = "#4caf50" }
+			html += `<tr><td style="background:white; padding:16px 32px; text-align:center;">
+			<span style="display:inline-block; padding:6px 16px; background:`+bg+`; color:white; font-size:12px; font-weight:bold; border-radius:20px; text-transform:uppercase;">`+text+`</span>
+			</td></tr>`
+
 		case "social":
 			networks := []map[string]interface{}{
 				{"type": "telegram", "link": "https://t.me/example"},

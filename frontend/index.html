@@ -261,6 +261,7 @@
                         <span class="block-tag" data-type="image">Картинка</span>
                         <span class="block-tag" data-type="html">HTML</span>
                         <span class="block-tag" data-type="form">Форма</span>
+                        <span class="block-tag" data-type="badge">Бейдж</span>
                     </div>
                 </div>
                 
@@ -463,6 +464,9 @@
                     data.title = 'Оставьте email и получите скидку';
                     data.placeholder = 'Ваш email';
                     data.button = 'Отправить';
+                } else if (type === 'badge') {
+                    data.text = 'NEW';
+                    data.type = 'new';
                 }
                 
                 return { type, data, enabled: true };
