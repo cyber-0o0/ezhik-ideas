@@ -777,6 +777,21 @@ body, table, td { font-family: Arial, Helvetica, sans-serif; }
 				html += `<tr><td style="background:white; padding:32px;"><table role="presentation" cellpadding="0" cellspacing="0" border="0" width="100%"><tr><td align="left" valign="middle" style="padding:24px;"><div style="font-size:20px; font-weight:bold; color:`+primary+`; margin-bottom:12px;">`+title+`</div><div style="font-size:14px; color:#666; line-height:22px;">`+content+`</div></td>` + imgHTML + `</tr></table></td></tr>`
 			}
 
+		case "alert":
+			text := "Важное сообщение"
+			alertType := "info"
+			if v, ok := data["text"].(string); ok { text = v }
+			if v, ok := data["type"].(string); ok { alertType = v }
+			bg := "#e3f2fd"
+			color := "#1565c0"
+			icon := "ℹ️"
+			if alertType == "success" { bg = "#e8f5e9"; color = "#2e7d32"; icon = "✅" }
+			if alertType == "warning" { bg = "#fff3e0"; color = "#ef6c00"; icon = "⚠️" }
+			if alertType == "error" { bg = "#ffebee"; color = "#c62828"; icon = "❌" }
+			html += `<tr><td style="background:`+bg+`; padding:16px 24px; border-radius:8px; margin:16px 32px;">
+			<span style="font-size:16px;">`+icon+`</span> <span style="color:`+color+`; margin-left:8px;">`+text+`</span>
+			</td></tr>`
+
 		case "social":
 			networks := []map[string]interface{}{
 				{"type": "telegram", "link": "https://t.me/example"},

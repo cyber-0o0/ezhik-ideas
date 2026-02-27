@@ -257,6 +257,7 @@
                         <span class="block-tag" data-type="pricing">Тарифы</span>
                         <span class="block-tag" data-type="spacer">Отступ</span>
                         <span class="block-tag" data-type="columns">Колонки</span>
+                        <span class="block-tag" data-type="alert">Уведомление</span>
                     </div>
                 </div>
                 
@@ -446,6 +447,9 @@
                     data.content = 'Описание вашего продукта или услуги. Расскажите о преимуществах.';
                     data.image = state.uploadedImage || 'https://via.placeholder.com/300x200';
                     data.imageSide = 'right';
+                } else if (type === 'alert') {
+                    data.text = 'Новая коллекция уже доступна!';
+                    data.type = 'info';
                 }
                 
                 return { type, data, enabled: true };
