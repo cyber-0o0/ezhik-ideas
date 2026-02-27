@@ -272,6 +272,7 @@
                         <span class="block-tag" data-type="stars">Рейтинг</span>
                         <span class="block-tag" data-type="progress">Прогресс</span>
                         <span class="block-tag" data-type="gift">Подарок</span>
+                        <span class="block-tag" data-type="logo">Логотип</span>
                     </div>
                 </div>
                 
@@ -521,6 +522,9 @@
                     data.title = 'Подарок для вас!';
                     data.description = 'Зарегистрируйтесь и получите бонус 500₽';
                     data.icon = '🎁';
+                } else if (type === 'logo') {
+                    data.src = '';
+                    data.link = 'https://example.com';
                 }
                 
                 return { type, data, enabled: true };

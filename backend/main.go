@@ -1001,6 +1001,20 @@ body, table, td { font-family: Arial, Helvetica, sans-serif; }
 			<div style="font-size:16px; color:rgba(255,255,255,0.9);">` + desc + `</div>
 			</td></tr>`
 
+		case "logo":
+			src := ""
+			link := "#"
+			if v, ok := data["src"].(string); ok { src = v }
+			if v, ok := data["link"].(string); ok { link = v }
+			html += `<tr><td style="background:white; padding:24px 32px; text-align:center;">
+			<a href="` + link + `">`
+			if src != "" {
+				html += `<img src="` + src + `" alt="Logo" style="max-width:200px; height:auto;">`
+			} else {
+				html += `<div style="font-size:24px; font-weight:bold; color:` + primary + `;">LOGO</div>`
+			}
+			html += `</a></td></tr>`
+
 		case "social":
 			networks := []map[string]interface{}{
 				{"type": "telegram", "link": "https://t.me/example"},
