@@ -280,6 +280,7 @@
                         <span class="block-tag" data-type="barcode">Штрихкод</span>
                         <span class="block-tag" data-type="instagram">Instagram</span>
                         <span class="block-tag" data-type="telegram">Telegram</span>
+                        <span class="block-tag" data-type="youtube">YouTube</span>
                     </div>
                 </div>
                 
@@ -553,6 +554,9 @@
                     data.name = 'Название канала';
                     data.description = 'Описание вашего канала';
                     data.members = '5,000';
+                } else if (type === 'youtube') {
+                    data.videoId = 'dQw4w9WgXcQ';
+                    data.title = 'Название видео';
                 }
                 
                 return { type, data, enabled: true };

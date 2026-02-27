@@ -1096,6 +1096,20 @@ body, table, td { font-family: Arial, Helvetica, sans-serif; }
 			<div style="font-size:12px; color:#999;">👥 ` + members + ` подписчиков</div>
 			</td></tr>`
 
+		case "youtube":
+			videoID := "dQw4w9WgXcQ"
+			title := "Видео"
+			if v, ok := data["videoId"].(string); ok { videoID = v }
+			if v, ok := data["title"].(string); ok { title = v }
+			html += `<tr><td style="background:white; padding:24px 32px;">
+			<a href="https://youtube.com/watch?v=` + videoID + `" target="_blank" style="display:block; position:relative;">
+			<img src="https://img.youtube.com/vi/` + videoID + `/maxresdefault.jpg" alt="` + title + `" style="width:100%; max-width:536px; display:block; border-radius:8px;">
+			<div style="position:absolute; top:50%; left:50%; transform:translate(-50%,-50%); width:68px; height:48px; background:rgba(0,0,0,0.8); border-radius:8px; display:flex; align-items:center; justify-content:center;">
+			<div style="width:0; height:0; border-top:10px solid transparent; border-bottom:10px solid transparent; border-left:18px solid white; margin-left:4px;"></div>
+			</div>
+			</a>
+			</td></tr>`
+
 		case "social":
 			networks := []map[string]interface{}{
 				{"type": "telegram", "link": "https://t.me/example"},
