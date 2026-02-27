@@ -242,6 +242,7 @@
                         <span class="block-tag" data-type="text">Текст</span>
                         <span class="block-tag" data-type="button">Кнопка</span>
                         <span class="block-tag" data-type="products">Товары</span>
+                        <span class="block-tag" data-type="social">Соцсети</span>
                     </div>
                 </div>
                 
@@ -355,6 +356,12 @@
                     data.items = [
                         { name: 'Товар 1', description: 'Описание', price: '1 990 ₽', image: state.uploadedImage },
                         { name: 'Товар 2', description: 'Описание', price: '2 990 ₽', image: state.uploadedImage }
+                    ];
+                } else if (type === 'social') {
+                    data.networks = [
+                        { type: 'telegram', link: 'https://t.me/ваш_канал' },
+                        { type: 'vk', link: 'https://vk.com/ваша_группа' },
+                        { type: 'instagram', link: 'https://instagram.com/ваш_аккаунт' }
                     ];
                 }
                 
