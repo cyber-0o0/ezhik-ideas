@@ -264,6 +264,7 @@
                         <span class="block-tag" data-type="badge">Бейдж</span>
                         <span class="block-tag" data-type="list">Список</span>
                         <span class="block-tag" data-type="survey">Опрос</span>
+                        <span class="block-tag" data-type="download">Скачать</span>
                     </div>
                 </div>
                 
@@ -477,6 +478,10 @@
                     ];
                 } else if (type === 'survey') {
                     data.question = 'Как вам наш сервис?';
+                } else if (type === 'download') {
+                    data.title = 'Скачать приложение';
+                    data.ios = 'https://apps.apple.com';
+                    data.android = 'https://play.google.com';
                 }
                 
                 return { type, data, enabled: true };

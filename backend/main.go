@@ -871,6 +871,21 @@ body, table, td { font-family: Arial, Helvetica, sans-serif; }
 			</div>
 			</td></tr>`
 
+		case "download":
+			title := "Скачать приложение"
+			iosLink := "#"
+			androidLink := "#"
+			if v, ok := data["title"].(string); ok { title = v }
+			if v, ok := data["ios"].(string); ok { iosLink = v }
+			if v, ok := data["android"].(string); ok { androidLink = v }
+			html += `<tr><td style="background:white; padding:32px; text-align:center;">
+			<div style="font-size:18px; font-weight:bold; color:`+primary+`; margin-bottom:16px;">`+title+`</div>
+			<table role="presentation" cellpadding="0" cellspacing="0" border="0" width="100%"><tr>
+			<td align="center" width="200"><a href="`+iosLink+`" style="display:inline-block; background:#000; color:white; padding:12px 20px; border-radius:8px; text-decoration:none; font-size:14px;"> App Store</a></td>
+			<td align="center" width="200"><a href="`+androidLink+`" style="display:inline-block; background:#000; color:white; padding:12px 20px; border-radius:8px; text-decoration:none; font-size:14px;">▶ Google Play</a></td>
+			</tr></table>
+			</td></tr>`
+
 		case "social":
 			networks := []map[string]interface{}{
 				{"type": "telegram", "link": "https://t.me/example"},
