@@ -247,6 +247,7 @@
                         <span class="block-tag" data-type="cta">CTA</span>
                         <span class="block-tag" data-type="quote">Цитата</span>
                         <span class="block-tag" data-type="event">Событие</span>
+                        <span class="block-tag" data-type="stats">Статистика</span>
                     </div>
                 </div>
                 
@@ -384,6 +385,12 @@
                     data.time = '18:00 МСК';
                     data.button_text = 'Зарегистрироваться';
                     data.button_link = 'https://example.com';
+                } else if (type === 'stats') {
+                    data.items = [
+                        { value: '10K+', label: 'Пользователей' },
+                        { value: '99%', label: 'Uptime' },
+                        { value: '24/7', label: 'Поддержка' }
+                    ];
                 }
                 
                 return { type, data, enabled: true };

@@ -583,6 +583,25 @@ body, table, td { font-family: Arial, Helvetica, sans-serif; }
 			<a href="`+btnLink+`" style="display:inline-block; background:`+accent+`; color:white; padding:14px 28px; text-decoration:none; border-radius:4px; font-weight:bold; margin-top:16px;">`+btnText+`</a>
 			</td></tr>`
 
+		case "stats":
+			items, _ := data["items"].([]interface{})
+			if len(items) == 0 {
+				items = []interface{}{
+					map[string]interface{}{"value": "10K+", "label": "Пользователей"},
+					map[string]interface{}{"value": "99%", "label": "Uptime"},
+					map[string]interface{}{"value": "24/7", "label": "Поддержка"},
+				}
+			}
+			html += `<tr><td style="background:white; padding:32px;"><table role="presentation" cellpadding="0" cellspacing="0" border="0" width="100%"><tr>`
+			for i, item := range items {
+				if i > 0 { html += `<td style="width:16px;"></td>` }
+				itemMap, _ := item.(map[string]interface{})
+				value := getString(itemMap, "value", "0")
+				label := getString(itemMap, "label", "Метрика")
+				html += `<td align="center" width="180"><div style="font-size:28px; font-weight:bold; color:`+primary+`;">`+value+`</div><div style="font-size:14px; color:#666; margin-top:4px;">`+label+`</div></td>`
+			}
+			html += `</tr></table></td></tr>`
+
 		case "social":
 			networks := []map[string]interface{}{
 				{"type": "telegram", "link": "https://t.me/example"},
@@ -643,4 +662,13 @@ func randomString(n int) string {
 		b[i] = letters[time.Now().UnixNano()%int64(len(letters))]
 	}
 	return string(b)
+}
+
+func getString(data map[string]interface{}, key, def string) string {
+	if val, ok := data[key]; ok {
+		if s, ok := val.(string); ok {
+			return s
+		}
+	}
+	return def
 }
