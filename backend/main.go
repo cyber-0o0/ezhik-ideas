@@ -1034,6 +1034,17 @@ body, table, td { font-family: Arial, Helvetica, sans-serif; }
 			<img src="https://api.qrserver.com/v1/create-qr-code/?size=` + size + `x` + size + `&data=` + link + `" width="` + size + `" height="` + size + `" alt="QR">
 			</td></tr>`
 
+		case "seal":
+			text := "СЕРТИФИКАТ"
+			html += `<tr><td style="background:white; padding:24px 32px; text-align:center;">
+			<div style="display:inline-block; width:120px; height:120px; border:4px solid #d4af37; border-radius:50%; display:flex; align-items:center; justify-content:center; transform:rotate(-15deg);">
+			<div style="text-align:center;">
+			<div style="font-size:14px; font-weight:bold; color:#d4af37; text-transform:uppercase;">` + text + `</div>
+			<div style="font-size:10px; color:#d4af37; margin-top:4px;">✓</div>
+			</div>
+			</div>
+			</td></tr>`
+
 		case "social":
 			networks := []map[string]interface{}{
 				{"type": "telegram", "link": "https://t.me/example"},

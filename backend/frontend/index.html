@@ -275,6 +275,7 @@
                         <span class="block-tag" data-type="logo">Логотип</span>
                         <span class="block-tag" data-type="share">Поделиться</span>
                         <span class="block-tag" data-type="qr">QR-код</span>
+                        <span class="block-tag" data-type="seal">Печать</span>
                     </div>
                 </div>
                 
@@ -532,6 +533,8 @@
                 } else if (type === 'qr') {
                     data.link = 'https://example.com';
                     data.size = '120';
+                } else if (type === 'seal') {
+                    data.text = 'СЕРТИФИКАТ';
                 }
                 
                 return { type, data, enabled: true };
