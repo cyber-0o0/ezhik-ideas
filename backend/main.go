@@ -683,6 +683,23 @@ body, table, td { font-family: Arial, Helvetica, sans-serif; }
 			</tr></table>
 			</td></tr>`
 
+		case "banner":
+			title := "Заголовок баннера"
+			desc := "Описание"
+			bg := "#1a1a2e"
+			btnText := "Кнопка"
+			btnLink := "#"
+			if v, ok := data["title"].(string); ok { title = v }
+			if v, ok := data["description"].(string); ok { desc = v }
+			if v, ok := data["background"].(string); ok { bg = v }
+			if v, ok := data["button_text"].(string); ok { btnText = v }
+			if v, ok := data["button_link"].(string); ok { btnLink = v }
+			html += `<tr><td style="background:`+bg+`; padding:48px 32px; text-align:center;">
+			<div style="font-size:28px; font-weight:bold; color:white; margin-bottom:12px;">`+title+`</div>
+			<div style="font-size:16px; color:rgba(255,255,255,0.8); margin-bottom:24px;">`+desc+`</div>
+			<a href="`+btnLink+`" style="display:inline-block; background:white; color:`+bg+`; padding:14px 32px; text-decoration:none; border-radius:4px; font-weight:bold;">`+btnText+`</a>
+			</td></tr>`
+
 		case "social":
 			networks := []map[string]interface{}{
 				{"type": "telegram", "link": "https://t.me/example"},

@@ -252,6 +252,7 @@
                         <span class="block-tag" data-type="video">Видео</span>
                         <span class="block-tag" data-type="gallery">Галерея</span>
                         <span class="block-tag" data-type="countdown">Таймер</span>
+                        <span class="block-tag" data-type="banner">Баннер</span>
                     </div>
                 </div>
                 
@@ -416,6 +417,12 @@
                     data.days = '03';
                     data.hours = '12';
                     data.minutes = '45';
+                } else if (type === 'banner') {
+                    data.title = 'Специальное предложение';
+                    data.description = 'Успейте получить скидку 50%';
+                    data.background = '#1a1a2e';
+                    data.button_text = 'Получить скидку';
+                    data.button_link = 'https://example.com';
                 }
                 
                 return { type, data, enabled: true };
