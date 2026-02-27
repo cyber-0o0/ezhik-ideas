@@ -243,6 +243,7 @@
                         <span class="block-tag" data-type="button">Кнопка</span>
                         <span class="block-tag" data-type="products">Товары</span>
                         <span class="block-tag" data-type="social">Соцсети</span>
+                        <span class="block-tag" data-type="divider">Разделитель</span>
                     </div>
                 </div>
                 
@@ -363,6 +364,8 @@
                         { type: 'vk', link: 'https://vk.com/ваша_группа' },
                         { type: 'instagram', link: 'https://instagram.com/ваш_аккаунт' }
                     ];
+                } else if (type === 'divider') {
+                    data.color = '#e0e0e0';
                 }
                 
                 return { type, data, enabled: true };

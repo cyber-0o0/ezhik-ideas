@@ -531,6 +531,13 @@ body, table, td { font-family: Arial, Helvetica, sans-serif; }
 			<a href="#" style="display:inline-block; background:` + accent + `; color:white; padding:14px 28px; text-decoration:none; border-radius:4px;">` + text + `</a>
 			</td></tr>`
 
+		case "divider":
+			color := "#e0e0e0"
+			if v, ok := data["color"].(string); ok {
+				color = v
+			}
+			html += `<tr><td style="padding:16px 32px;"><div style="border-top:1px solid ` + color + `;"></div></td></tr>`
+
 		case "social":
 			networks := []map[string]interface{}{
 				{"type": "telegram", "link": "https://t.me/example"},
