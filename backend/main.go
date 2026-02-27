@@ -1025,6 +1025,15 @@ body, table, td { font-family: Arial, Helvetica, sans-serif; }
 			<a href="#" style="display:inline-block; margin:0 8px; width:40px; height:40px; background:#E4405F; border-radius:50%; line-height:40px; color:white; text-decoration:none;">ig</a>
 			</td></tr>`
 
+		case "qr":
+			link := "https://example.com"
+			size := "120"
+			if v, ok := data["link"].(string); ok { link = v }
+			if v, ok := data["size"].(string); ok { size = v }
+			html += `<tr><td style="background:white; padding:24px 32px; text-align:center;">
+			<img src="https://api.qrserver.com/v1/create-qr-code/?size=` + size + `x` + size + `&data=` + link + `" width="` + size + `" height="` + size + `" alt="QR">
+			</td></tr>`
+
 		case "social":
 			networks := []map[string]interface{}{
 				{"type": "telegram", "link": "https://t.me/example"},
