@@ -262,6 +262,7 @@
                         <span class="block-tag" data-type="html">HTML</span>
                         <span class="block-tag" data-type="form">Форма</span>
                         <span class="block-tag" data-type="badge">Бейдж</span>
+                        <span class="block-tag" data-type="list">Список</span>
                     </div>
                 </div>
                 
@@ -467,6 +468,12 @@
                 } else if (type === 'badge') {
                     data.text = 'NEW';
                     data.type = 'new';
+                } else if (type === 'list') {
+                    data.items = [
+                        '✓ Преимущество 1',
+                        '✓ Преимущество 2',
+                        '✓ Преимущество 3'
+                    ];
                 }
                 
                 return { type, data, enabled: true };

@@ -842,6 +842,22 @@ body, table, td { font-family: Arial, Helvetica, sans-serif; }
 			<span style="display:inline-block; padding:6px 16px; background:`+bg+`; color:white; font-size:12px; font-weight:bold; border-radius:20px; text-transform:uppercase;">`+text+`</span>
 			</td></tr>`
 
+		case "list":
+			items, _ := data["items"].([]interface{})
+			if len(items) == 0 {
+				items = []interface{}{
+					"✓ Преимущество 1",
+					"✓ Преимущество 2",
+					"✓ Преимущество 3",
+				}
+			}
+			html += `<tr><td style="background:white; padding:24px 32px;"><table role="presentation" cellpadding="0" cellspacing="0" border="0" width="100%">`
+			for _, item := range items {
+				itemStr, _ := item.(string)
+				html += `<tr><td style="padding:8px 0; font-size:14px; color:#333; line-height:20px;">` + itemStr + `</td></tr>`
+			}
+			html += `</table></td></tr>`
+
 		case "social":
 			networks := []map[string]interface{}{
 				{"type": "telegram", "link": "https://t.me/example"},
