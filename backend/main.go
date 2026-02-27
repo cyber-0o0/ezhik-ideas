@@ -530,6 +530,49 @@ body, table, td { font-family: Arial, Helvetica, sans-serif; }
 			html += `<tr><td style="background:white; padding:0 32px 32px; text-align:center;">
 			<a href="#" style="display:inline-block; background:` + accent + `; color:white; padding:14px 28px; text-decoration:none; border-radius:4px;">` + text + `</a>
 			</td></tr>`
+
+		case "social":
+			networks := []map[string]interface{}{
+				{"type": "telegram", "link": "https://t.me/example"},
+				{"type": "vk", "link": "https://vk.com/example"},
+				{"type": "instagram", "link": "https://instagram.com/example"},
+			}
+			if v, ok := data["networks"].([]interface{}); ok {
+				networks = make([]map[string]interface{}, len(v))
+				for i, n := range v {
+					if nm, ok := n.(map[string]interface{}); ok {
+						networks[i] = nm
+					}
+				}
+			}
+			html += `<tr><td style="background:#1a1a2e; padding:16px; text-align:center;">`
+			for _, n := range networks {
+				networkType := "link"
+				link := "https://example.com"
+				if t, ok := n["type"].(string); ok {
+					networkType = t
+				}
+				if l, ok := n["link"].(string); ok {
+					link = l
+				}
+				var iconAlt string
+				switch networkType {
+				case "telegram":
+					iconAlt = "Telegram"
+				case "vk":
+					iconAlt = "ВКонтакте"
+				case "instagram":
+					iconAlt = "Instagram"
+				case "whatsapp":
+					iconAlt = "WhatsApp"
+				case "youtube":
+					iconAlt = "YouTube"
+				default:
+					iconAlt = networkType
+				}
+				html += `<a href="` + link + `" target="_blank" style="display:inline-block; margin:0 8px;"><span style="display:inline-block; width:32px; height:32px; background:#3a4a5a; color:white; border-radius:50%; line-height:32px; font-size:14px;">` + iconAlt + `</span></a>`
+			}
+			html += `</td></tr>`
 		}
 	}
 	
