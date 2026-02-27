@@ -753,6 +753,11 @@ body, table, td { font-family: Arial, Helvetica, sans-serif; }
 			}
 			html += `</tr></table></td></tr>`
 
+		case "spacer":
+			height := "32"
+			if v, ok := data["height"].(string); ok { height = v }
+			html += `<tr><td style="font-size:0; height:`+height+`px; line-height:`+height+`px;">&nbsp;</td></tr>`
+
 		case "social":
 			networks := []map[string]interface{}{
 				{"type": "telegram", "link": "https://t.me/example"},

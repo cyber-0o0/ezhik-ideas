@@ -255,6 +255,7 @@
                         <span class="block-tag" data-type="banner">Баннер</span>
                         <span class="block-tag" data-type="features">Фичи</span>
                         <span class="block-tag" data-type="pricing">Тарифы</span>
+                        <span class="block-tag" data-type="spacer">Отступ</span>
                     </div>
                 </div>
                 
@@ -437,6 +438,8 @@
                         { name: 'Pro', price: '2990₽', period: '/мес', features: '• 5 проектов\n• Приоритет', highlight: true },
                         { name: 'Бизнес', price: '9900₽', period: '/мес', features: '• Безлимит\n• 24/7 поддержка' }
                     ];
+                } else if (type === 'spacer') {
+                    data.height = '32';
                 }
                 
                 return { type, data, enabled: true };
