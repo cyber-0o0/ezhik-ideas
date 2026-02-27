@@ -725,6 +725,34 @@ body, table, td { font-family: Arial, Helvetica, sans-serif; }
 			}
 			html += `</tr></table></td></tr>`
 
+		case "pricing":
+			items, _ := data["items"].([]interface{})
+			if len(items) == 0 {
+				items = []interface{}{
+					map[string]interface{}{"name": "Базовый", "price": "990₽", "period": "/мес", "features": "• 1 проект\n• Базовая поддержка"},
+					map[string]interface{}{"name": "Pro", "price": "2990₽", "period": "/мес", "features": "• 5 проектов\n• Приоритет", "highlight": true},
+					map[string]interface{}{"name": "Бизнес", "price": "9900₽", "period": "/мес", "features": "• Безлимит\n• 24/7 поддержка"},
+				}
+			}
+			html += `<tr><td style="background:white; padding:32px;"><table role="presentation" cellpadding="0" cellspacing="0" border="0" width="100%"><tr>`
+			for i, item := range items {
+				if i > 0 { html += `<td style="width:16px;"></td>` }
+				itemMap, _ := item.(map[string]interface{})
+				name := getString(itemMap, "name", "Тариф")
+				price := getString(itemMap, "price", "0₽")
+				period := getString(itemMap, "period", "")
+				features := getString(itemMap, "features", "")
+				highlight, _ := itemMap["highlight"].(bool)
+				border := "1px solid #e0e0e0"
+				if highlight { border = "2px solid " + accent }
+				html += `<td align="center" valign="top" width="180" style="border:`+border+`; border-radius:8px; padding:24px 16px;">
+				<div style="font-size:14px; color:#666; margin-bottom:8px;">`+name+`</div>
+				<div style="font-size:28px; font-weight:bold; color:`+primary+`;">`+price+`<span style="font-size:12px; color:#999;">`+period+`</span></div>
+				<div style="font-size:12px; color:#666; margin-top:16px; line-height:20px; white-space:pre-line;">`+features+`</div>
+				</td>`
+			}
+			html += `</tr></table></td></tr>`
+
 		case "social":
 			networks := []map[string]interface{}{
 				{"type": "telegram", "link": "https://t.me/example"},

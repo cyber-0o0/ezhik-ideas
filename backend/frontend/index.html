@@ -254,6 +254,7 @@
                         <span class="block-tag" data-type="countdown">Таймер</span>
                         <span class="block-tag" data-type="banner">Баннер</span>
                         <span class="block-tag" data-type="features">Фичи</span>
+                        <span class="block-tag" data-type="pricing">Тарифы</span>
                     </div>
                 </div>
                 
@@ -429,6 +430,12 @@
                         { icon: '🚀', title: 'Быстро', desc: 'Работает мгновенно' },
                         { icon: '🔒', title: 'Безопасно', desc: 'Ваши данные защищены' },
                         { icon: '💎', title: 'Качественно', desc: 'Лучшие материалы' }
+                    ];
+                } else if (type === 'pricing') {
+                    data.items = [
+                        { name: 'Базовый', price: '990₽', period: '/мес', features: '• 1 проект\n• Базовая поддержка' },
+                        { name: 'Pro', price: '2990₽', period: '/мес', features: '• 5 проектов\n• Приоритет', highlight: true },
+                        { name: 'Бизнес', price: '9900₽', period: '/мес', features: '• Безлимит\n• 24/7 поддержка' }
                     ];
                 }
                 
