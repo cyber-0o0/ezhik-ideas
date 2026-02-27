@@ -758,6 +758,25 @@ body, table, td { font-family: Arial, Helvetica, sans-serif; }
 			if v, ok := data["height"].(string); ok { height = v }
 			html += `<tr><td style="font-size:0; height:`+height+`px; line-height:`+height+`px;">&nbsp;</td></tr>`
 
+		case "columns":
+			image := ""
+			title := "Заголовок"
+			content := "Текст"
+			imageSide := "right"
+			if v, ok := data["image"].(string); ok { image = v }
+			if v, ok := data["title"].(string); ok { title = v }
+			if v, ok := data["content"].(string); ok { content = v }
+			if v, ok := data["imageSide"].(string); ok { imageSide = v }
+			imgHTML := ""
+			if image != "" {
+				imgHTML = `<td align="center" valign="middle" width="260" style="padding:24px;"><img src="`+image+`" width="260" height="180" style="display:block; border-radius:4px;"></td>`
+			}
+			if imageSide == "left" {
+				html += `<tr><td style="background:white; padding:32px;"><table role="presentation" cellpadding="0" cellspacing="0" border="0" width="100%"><tr>` + imgHTML + `<td align="left" valign="middle" style="padding:24px;"><div style="font-size:20px; font-weight:bold; color:`+primary+`; margin-bottom:12px;">`+title+`</div><div style="font-size:14px; color:#666; line-height:22px;">`+content+`</div></td></tr></table></td></tr>`
+			} else {
+				html += `<tr><td style="background:white; padding:32px;"><table role="presentation" cellpadding="0" cellspacing="0" border="0" width="100%"><tr><td align="left" valign="middle" style="padding:24px;"><div style="font-size:20px; font-weight:bold; color:`+primary+`; margin-bottom:12px;">`+title+`</div><div style="font-size:14px; color:#666; line-height:22px;">`+content+`</div></td>` + imgHTML + `</tr></table></td></tr>`
+			}
+
 		case "social":
 			networks := []map[string]interface{}{
 				{"type": "telegram", "link": "https://t.me/example"},

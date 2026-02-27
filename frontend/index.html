@@ -256,6 +256,7 @@
                         <span class="block-tag" data-type="features">Фичи</span>
                         <span class="block-tag" data-type="pricing">Тарифы</span>
                         <span class="block-tag" data-type="spacer">Отступ</span>
+                        <span class="block-tag" data-type="columns">Колонки</span>
                     </div>
                 </div>
                 
@@ -440,6 +441,11 @@
                     ];
                 } else if (type === 'spacer') {
                     data.height = '32';
+                } else if (type === 'columns') {
+                    data.title = 'Заголовок секции';
+                    data.content = 'Описание вашего продукта или услуги. Расскажите о преимуществах.';
+                    data.image = state.uploadedImage || 'https://via.placeholder.com/300x200';
+                    data.imageSide = 'right';
                 }
                 
                 return { type, data, enabled: true };
