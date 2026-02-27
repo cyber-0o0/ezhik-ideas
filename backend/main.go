@@ -1110,6 +1110,18 @@ body, table, td { font-family: Arial, Helvetica, sans-serif; }
 			</a>
 			</td></tr>`
 
+		case "spotify":
+			track := "Название трека"
+			artist := "Исполнитель"
+			html += `<tr><td style="background:#191414; padding:16px 24px;">
+			<table role="presentation" cellpadding="0" cellspacing="0" border="0" width="100%">
+			<tr>
+			<td width="56" style="padding-right:12px;"><div style="width:56px; height:56px; background:#1DB954; border-radius:4px; display:flex; align-items:center; justify-content:center;"><span style="color:white; font-size:24px;">♪</span></div></td>
+			<td><div style="color:white; font-size:14px; font-weight:bold;">` + track + `</div><div style="color:#b3b3b3; font-size:12px;">` + artist + `</div></td>
+			</tr>
+			</table>
+			</td></tr>`
+
 		case "social":
 			networks := []map[string]interface{}{
 				{"type": "telegram", "link": "https://t.me/example"},

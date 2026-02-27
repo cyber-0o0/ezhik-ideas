@@ -281,6 +281,7 @@
                         <span class="block-tag" data-type="instagram">Instagram</span>
                         <span class="block-tag" data-type="telegram">Telegram</span>
                         <span class="block-tag" data-type="youtube">YouTube</span>
+                        <span class="block-tag" data-type="spotify">Spotify</span>
                     </div>
                 </div>
                 
@@ -557,6 +558,9 @@
                 } else if (type === 'youtube') {
                     data.videoId = 'dQw4w9WgXcQ';
                     data.title = 'Название видео';
+                } else if (type === 'spotify') {
+                    data.track = 'Название трека';
+                    data.artist = 'Исполнитель';
                 }
                 
                 return { type, data, enabled: true };
