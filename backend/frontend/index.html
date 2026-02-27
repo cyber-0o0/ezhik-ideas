@@ -268,6 +268,7 @@
                         <span class="block-tag" data-type="footer2">Подвал</span>
                         <span class="block-tag" data-type="steps">Шаги</span>
                         <span class="block-tag" data-type="cards">Карточки</span>
+                        <span class="block-tag" data-type="testimonial">Отзыв</span>
                     </div>
                 </div>
                 
@@ -502,6 +503,11 @@
                         { title: 'Преимущество 2', desc: 'Описание второго преимущества' },
                         { title: 'Преимущество 3', desc: 'Описание третьего преимущества' }
                     ];
+                } else if (type === 'testimonial') {
+                    data.name = 'Александр Петров';
+                    data.text = 'Отличный сервис! Всё работает как часы. Рекомендую!';
+                    data.avatar = 'https://via.placeholder.com/60';
+                    data.role = 'Предприниматель';
                 }
                 
                 return { type, data, enabled: true };

@@ -941,6 +941,22 @@ body, table, td { font-family: Arial, Helvetica, sans-serif; }
 			}
 			html += `</tr></table></td></tr>`
 
+		case "testimonial":
+			name := "Иван Иванов"
+			text := "Отличный сервис! Всё работает."
+			avatar := "https://via.placeholder.com/60"
+			role := "Клиент"
+			if v, ok := data["name"].(string); ok { name = v }
+			if v, ok := data["text"].(string); ok { text = v }
+			if v, ok := data["avatar"].(string); ok { avatar = v }
+			if v, ok := data["role"].(string); ok { role = v }
+			html += `<tr><td style="background:#f9f9f9; padding:32px; text-align:center;">
+			<img src="`+avatar+`" width="60" height="60" style="border-radius:50%; display:inline-block; margin-bottom:12px;">
+			<div style="font-size:14px; color:#666; font-style:italic; margin-bottom:12px;">" `+text+` "</div>
+			<div style="font-size:14px; font-weight:bold; color:`+primary+`;">`+name+`</div>
+			<div style="font-size:12px; color:#999;">`+role+`</div>
+			</td></tr>`
+
 		case "social":
 			networks := []map[string]interface{}{
 				{"type": "telegram", "link": "https://t.me/example"},
