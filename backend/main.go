@@ -951,10 +951,10 @@ body, table, td { font-family: Arial, Helvetica, sans-serif; }
 			if v, ok := data["avatar"].(string); ok { avatar = v }
 			if v, ok := data["role"].(string); ok { role = v }
 			html += `<tr><td style="background:#f9f9f9; padding:32px; text-align:center;">
-			<img src="`+avatar+`" width="60" height="60" style="border-radius:50%; display:inline-block; margin-bottom:12px;">
-			<div style="font-size:14px; color:#666; font-style:italic; margin-bottom:12px;">" `+text+` "</div>
-			<div style="font-size:14px; font-weight:bold; color:`+primary+`;">`+name+`</div>
-			<div style="font-size:12px; color:#999;">`+role+`</div>
+			<img src="` + avatar + `" width="60" height="60" style="border-radius:50%; display:inline-block; margin-bottom:12px;">
+			<div style="font-size:14px; color:#666; font-style:italic; margin-bottom:12px;">"` + text + `"</div>
+			<div style="font-size:14px; font-weight:bold; color:` + primary + `;">` + name + `</div>
+			<div style="font-size:12px; color:#999;">` + role + `</div>
 			</td></tr>`
 
 		case "social":
