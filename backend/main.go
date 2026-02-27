@@ -915,9 +915,31 @@ body, table, td { font-family: Arial, Helvetica, sans-serif; }
 			html += `<tr><td style="background:white; padding:32px;">`
 			for i, item := range items {
 				itemStr, _ := item.(string)
-				html += `<div style="margin-bottom:16px;"><span style="display:inline-block; width:28px; height:28px; background:`+accent+`; color:white; border-radius:50%; text-align:center; line-height:28px; font-size:14px; font-weight:bold; margin-right:12px;">`+fmt.Sprintf("%d", i+1)+`</span><span style="font-size:14px; color:#333; vertical-align:middle;">`+itemStr+`</span></div>`
+				html += `<div style="margin-bottom:16px;"><span style="display:inline-block; width:28px; height:28px; background:` + accent + `; color:white; border-radius:50%; text-align:center; line-height:28px; font-size:14px; font-weight:bold; margin-right:12px;">` + fmt.Sprintf("%d", i+1) + `</span><span style="font-size:14px; color:#333; vertical-align:middle;">` + itemStr + `</span></div>`
 			}
 			html += `</td></tr>`
+
+		case "cards":
+			items, _ := data["items"].([]interface{})
+			if len(items) == 0 {
+				items = []interface{}{
+					map[string]interface{}{"title": "Карточка 1", "desc": "Описание 1"},
+					map[string]interface{}{"title": "Карточка 2", "desc": "Описание 2"},
+					map[string]interface{}{"title": "Карточка 3", "desc": "Описание 3"},
+				}
+			}
+			html += `<tr><td style="background:white; padding:32px;"><table role="presentation" cellpadding="0" cellspacing="0" border="0" width="100%"><tr>`
+			for i, item := range items {
+				if i > 0 { html += `<td style="width:16px;"></td>` }
+				itemMap, _ := item.(map[string]interface{})
+				title := getString(itemMap, "title", "Заголовок")
+				desc := getString(itemMap, "desc", "Описание")
+				html += `<td valign="top" width="180" style="border:1px solid #e0e0e0; border-radius:8px; padding:16px;">
+				<div style="font-size:16px; font-weight:bold; color:` + primary + `; margin-bottom:8px;">` + title + `</div>
+				<div style="font-size:13px; color:#666; line-height:18px;">` + desc + `</div>
+				</td>`
+			}
+			html += `</tr></table></td></tr>`
 
 		case "social":
 			networks := []map[string]interface{}{

@@ -267,6 +267,7 @@
                         <span class="block-tag" data-type="download">Скачать</span>
                         <span class="block-tag" data-type="footer2">Подвал</span>
                         <span class="block-tag" data-type="steps">Шаги</span>
+                        <span class="block-tag" data-type="cards">Карточки</span>
                     </div>
                 </div>
                 
@@ -494,6 +495,12 @@
                         'Зарегистрируйтесь на сайте',
                         'Настройте профиль',
                         'Начните использовать сервис'
+                    ];
+                } else if (type === 'cards') {
+                    data.items = [
+                        { title: 'Преимущество 1', desc: 'Описание первого преимущества' },
+                        { title: 'Преимущество 2', desc: 'Описание второго преимущества' },
+                        { title: 'Преимущество 3', desc: 'Описание третьего преимущества' }
                     ];
                 }
                 
