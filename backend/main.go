@@ -1122,6 +1122,16 @@ body, table, td { font-family: Arial, Helvetica, sans-serif; }
 			</table>
 			</td></tr>`
 
+		case "discord":
+			name := "Discord сервер"
+			members := "1,000"
+			html += `<tr><td style="background:#5865F2; padding:24px 32px; text-align:center;">
+			<div style="font-size:32px; margin-bottom:8px;">💬</div>
+			<div style="font-size:18px; font-weight:bold; color:white; margin-bottom:4px;">` + name + `</div>
+			<div style="font-size:14px; color:rgba(255,255,255,0.8); margin-bottom:12px;">👥 ` + members + ` участников</div>
+			<a href="#" style="display:inline-block; background:white; color:#5865F2; padding:10px 24px; border-radius:4px; text-decoration:none; font-weight:bold;">Присоединиться</a>
+			</td></tr>`
+
 		case "social":
 			networks := []map[string]interface{}{
 				{"type": "telegram", "link": "https://t.me/example"},

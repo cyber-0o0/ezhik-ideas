@@ -282,6 +282,7 @@
                         <span class="block-tag" data-type="telegram">Telegram</span>
                         <span class="block-tag" data-type="youtube">YouTube</span>
                         <span class="block-tag" data-type="spotify">Spotify</span>
+                        <span class="block-tag" data-type="discord">Discord</span>
                     </div>
                 </div>
                 
@@ -561,6 +562,9 @@
                 } else if (type === 'spotify') {
                     data.track = 'Название трека';
                     data.artist = 'Исполнитель';
+                } else if (type === 'discord') {
+                    data.name = 'Наш Discord сервер';
+                    data.members = '5,000';
                 }
                 
                 return { type, data, enabled: true };
