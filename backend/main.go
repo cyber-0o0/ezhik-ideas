@@ -87,6 +87,7 @@ func main() {
 	r.POST("/api/stars/pay", handleStarsPay)
 	r.POST("/api/pro-brainstorm", handleProBrainstorm)
 	r.POST("/api/supervisor/startup", handleSupervisorStartup)
+	r.POST("/api/supervisor/marketing", handleSupervisorMarketing)
 	
 	// Email Builder API
 	r.POST("/api/generate", handleEmailGenerate)
@@ -1245,6 +1246,32 @@ func randomString(n int) string {
 		b[i] = letters[time.Now().UnixNano()%int64(len(letters))]
 	}
 	return string(b)
+}
+
+func handleSupervisorMarketing(c *gin.Context) {
+	var req struct {
+		UserID string `json:"user_id" binding:"required"`
+		Goal   string `json:"goal" binding:"required"`
+	}
+	if err := c.ShouldBindJSON(&req); err != nil {
+		c.JSON(http.StatusBadRequest, gin.H{"error": "User ID and Goal are required"})
+		return
+	}
+
+	if !premiumUsers[req.UserID] {
+		c.JSON(http.StatusPaymentRequired, gin.H{"error": "Premium required. Buy Stars to unlock the Marketing Specialist!"})
+		return
+	}
+
+	systemPrompt := `Ты - Social Media Specialist (v2.7). Составь 7-дневный контент-план для продвижения стартапа пользователя. 
+Для каждого дня укажи:
+1. Тему поста.
+2. Текст поста (коротко).
+3. Визуальный стиль (например, PSX-style скриншот или инфографика).
+Будь креативным и ориентируйся на привлечение первых пользователей.`
+	
+	response := callGroq(req.Goal, systemPrompt)
+	c.JSON(http.StatusOK, gin.H{"response": response})
 }
 
 func handleSupervisorStartup(c *gin.Context) {
