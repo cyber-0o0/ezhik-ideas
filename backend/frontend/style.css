@@ -214,3 +214,23 @@ footer {
 .loading {
   animation: pulse 1.5s infinite;
 }
+
+/* PSX Mode UI */
+.psx-theme {
+  font-family: 'Courier New', Courier, monospace !important;
+  color: #00ff00 !important;
+  background: #000 !important;
+  border: 4px double #00ff00 !important;
+  text-shadow: 2px 2px #550055;
+  image-rendering: pixelated;
+}
+
+.psx-theme .idea-box {
+  background: #111 !important;
+  border: 2px dashed #00ff00 !important;
+}
+
+.psx-theme header h1 {
+  text-transform: uppercase;
+  letter-spacing: 2px;
+}

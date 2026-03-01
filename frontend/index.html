@@ -38,8 +38,42 @@
             background: linear-gradient(135deg, var(--accent), #a855f7);
             -webkit-background-clip: text;
             -webkit-text-fill-color: transparent;
+            display: inline-block;
         }
         
+        .premium-badge {
+            display: inline-block;
+            padding: 4px 8px;
+            background: linear-gradient(135deg, #f59e0b, #d97706);
+            color: white;
+            border-radius: 6px;
+            font-size: 10px;
+            font-weight: 800;
+            text-transform: uppercase;
+            vertical-align: top;
+            margin-left: 8px;
+            margin-top: 4px;
+        }
+
+        .btn-stars {
+            background: linear-gradient(135deg, #3b82f6, #2563eb);
+            color: white;
+            border: none;
+            padding: 8px 16px;
+            border-radius: 8px;
+            font-size: 13px;
+            font-weight: 600;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            margin-top: 12px;
+        }
+        
+        .btn-stars:hover {
+            filter: brightness(1.1);
+        }
+
         .subtitle {
             color: var(--text-dim);
             margin-bottom: 32px;
@@ -206,8 +240,16 @@
 </head>
 <body>
     <div class="container">
-        <h1>📧 Email Builder</h1>
-        <p class="subtitle">Создавай профессиональные письма за минуты</p>
+        <div style="display: flex; justify-content: space-between; align-items: flex-start;">
+            <div>
+                <h1>📧 Email Builder</h1>
+                <span class="premium-badge hidden" id="premiumStatus">PREMIUM</span>
+                <p class="subtitle">Создавай профессиональные письма за минуты</p>
+            </div>
+            <button class="btn-stars" id="buyStarsBtn">
+                <span>⭐ Купить Stars</span>
+            </button>
+        </div>
         
         <div class="grid">
             <div class="card">

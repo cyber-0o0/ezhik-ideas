@@ -75,6 +75,13 @@ async function generateIdea() {
     ideaText.textContent = currentIdea;
     ideaText.classList.remove('loading');
     actions.classList.remove('hidden');
+
+    // Toggle PSX Theme
+    if (category === 'psx') {
+      document.body.classList.add('psx-theme');
+    } else {
+      document.body.classList.remove('psx-theme');
+    }
     
     // Update local stats
     stats.count++;
