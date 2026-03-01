@@ -88,6 +88,7 @@ func main() {
 	r.POST("/api/pro-brainstorm", handleProBrainstorm)
 	r.POST("/api/supervisor/startup", handleSupervisorStartup)
 	r.POST("/api/supervisor/marketing", handleSupervisorMarketing)
+	r.POST("/api/supervisor/pce", handlePlannerCriticExecutor)
 	
 	// Email Builder API
 	r.POST("/api/generate", handleEmailGenerate)
@@ -1246,6 +1247,33 @@ func randomString(n int) string {
 		b[i] = letters[time.Now().UnixNano()%int64(len(letters))]
 	}
 	return string(b)
+}
+
+func handlePlannerCriticExecutor(c *gin.Context) {
+	var req struct {
+		UserID string `json:"user_id" binding:"required"`
+		Task   string `json:"task" binding:"required"`
+	}
+	if err := c.ShouldBindJSON(&req); err != nil {
+		c.JSON(http.StatusBadRequest, gin.H{"error": "User ID and Task are required"})
+		return
+	}
+
+	if !premiumUsers[req.UserID] {
+		c.JSON(http.StatusPaymentRequired, gin.H{"error": "Premium required. Buy Stars to unlock high-stakes workflows!"})
+		return
+	}
+
+	systemPrompt := `Ты - Planner-Critic-Executor System (v2.8). 
+Твоя работа:
+1. Planner: Составь подробный план решения задачи.
+2. Critic: Найди слабые места в этом плане и предложи улучшения.
+3. Executor: Выполни задачу, учитывая критику.
+
+Верни итоговый результат на русском языке.`
+	
+	response := callGroq(req.Task, systemPrompt)
+	c.JSON(http.StatusOK, gin.H{"response": response})
 }
 
 func handleSupervisorMarketing(c *gin.Context) {
