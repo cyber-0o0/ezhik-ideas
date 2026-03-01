@@ -89,6 +89,7 @@ func main() {
 	r.POST("/api/supervisor/startup", handleSupervisorStartup)
 	r.POST("/api/supervisor/marketing", handleSupervisorMarketing)
 	r.POST("/api/supervisor/pce", handlePlannerCriticExecutor)
+	r.POST("/api/supervisor/ralph", handleRalphMode)
 	
 	// Email Builder API
 	r.POST("/api/generate", handleEmailGenerate)
@@ -1400,4 +1401,34 @@ func getString(data map[string]interface{}, key, def string) string {
 		}
 	}
 	return def
+}
+
+func handleRalphMode(c *gin.Context) {
+	var req struct {
+		UserID string `json:"user_id" binding:"required"`
+		PRD    string `json:"prd" binding:"required"`
+		Task   string `json:"task" binding:"required"`
+	}
+	if err := c.ShouldBindJSON(&req); err != nil {
+		c.JSON(http.StatusBadRequest, gin.H{"error": "User ID, PRD and Task are required"})
+		return
+	}
+
+	if !premiumUsers[req.UserID] {
+		c.JSON(http.StatusPaymentRequired, gin.H{"error": "Premium required. Buy Stars to unlock Ralph Mode (Autonomous Iteration)!"})
+		return
+	}
+
+	systemPrompt := `Ты - Ralph Autonomous Iteration System (v2.9). 
+Методология: "Eventual Consistency" (конечная согласованность).
+Твои шаги:
+1. Coder: Напиши решение задачи.
+2. Dialectic Critic: Тщательно проверь код на соответствие PRD. Найди все возможные баги, уязвимости и несоответствия стилю.
+3. Refactorer: Перепиши код, устранив все замечания Критика.
+
+Верни только финальный, отполированный результат на русском языке, но добавь краткий лог итерации в начале.`
+	
+	prompt := fmt.Sprintf("PRD: %s\n\nTask: %s", req.PRD, req.Task)
+	response := callGroq(prompt, systemPrompt)
+	c.JSON(http.StatusOK, gin.H{"response": response})
 }
