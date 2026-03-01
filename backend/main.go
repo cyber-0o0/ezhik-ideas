@@ -84,6 +84,7 @@ func main() {
 	r.POST("/api/youtube-dl", downloadYouTube)
 	r.POST("/api/code", generateCode)
 	r.POST("/api/stars/check", checkStars)
+	r.POST("/api/stars/pay", handleStarsPay)
 	r.POST("/api/pro-brainstorm", handleProBrainstorm)
 	
 	// Email Builder API
@@ -1243,6 +1244,26 @@ func randomString(n int) string {
 		b[i] = letters[time.Now().UnixNano()%int64(len(letters))]
 	}
 	return string(b)
+}
+
+func handleStarsPay(c *gin.Context) {
+	var req struct {
+		UserID string `json:"user_id" binding:"required"`
+		Amount int    `json:"amount" binding:"required"`
+	}
+	if err := c.ShouldBindJSON(&req); err != nil {
+		c.JSON(http.StatusBadRequest, gin.H{"error": "User ID and Amount are required"})
+		return
+	}
+
+	// Mock payment: if amount >= 50 stars, grant premium
+	if req.Amount >= 50 {
+		premiumUsers[req.UserID] = true
+		savePremiumUsers()
+		c.JSON(http.StatusOK, gin.H{"status": "success", "message": "Premium activated!"})
+	} else {
+		c.JSON(http.StatusBadRequest, gin.H{"status": "error", "message": "Insufficient amount. Minimum 50 Stars."})
+	}
 }
 
 func handleProBrainstorm(c *gin.Context) {
