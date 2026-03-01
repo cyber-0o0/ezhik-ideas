@@ -18,6 +18,20 @@ import (
 
 var statsCount int
 var premiumUsers = make(map[string]bool)
+const premiumFile = "premium_users.json"
+
+func loadPremiumUsers() {
+	data, err := os.ReadFile(premiumFile)
+	if err != nil {
+		return
+	}
+	json.Unmarshal(data, &premiumUsers)
+}
+
+func savePremiumUsers() {
+	data, _ := json.Marshal(premiumUsers)
+	os.WriteFile(premiumFile, data, 0644)
+}
 
 type Idea struct {
 	ID        int    `json:"id"`
@@ -46,6 +60,7 @@ type YouTubeRequest struct {
 
 func main() {
 	godotenv.Load("/root/.openclaw/workspace/ezhik-ideas/backend/.env")
+	loadPremiumUsers()
 	// Setup router
 	r := gin.Default()
 	
@@ -69,6 +84,7 @@ func main() {
 	r.POST("/api/youtube-dl", downloadYouTube)
 	r.POST("/api/code", generateCode)
 	r.POST("/api/stars/check", checkStars)
+	r.POST("/api/pro-brainstorm", handleProBrainstorm)
 	
 	// Email Builder API
 	r.POST("/api/generate", handleEmailGenerate)
@@ -1229,6 +1245,26 @@ func randomString(n int) string {
 	return string(b)
 }
 
+func handleProBrainstorm(c *gin.Context) {
+	var req struct {
+		UserID string `json:"user_id" binding:"required"`
+		Prompt string `json:"prompt" binding:"required"`
+	}
+	if err := c.ShouldBindJSON(&req); err != nil {
+		c.JSON(http.StatusBadRequest, gin.H{"error": "User ID and Prompt are required"})
+		return
+	}
+
+	if !premiumUsers[req.UserID] {
+		c.JSON(http.StatusPaymentRequired, gin.H{"error": "Premium required. Buy Stars to unlock!"})
+		return
+	}
+
+	systemPrompt := "Ты экспертный бизнес-аналитик. Проведи глубокий брейншторм идеи пользователя. Выдели: 1. Уникальность, 2. Рыночный потенциал, 3. Риски, 4. Первые шаги."
+	response := callGroq(req.Prompt, systemPrompt)
+	c.JSON(http.StatusOK, gin.H{"response": response})
+}
+
 func checkStars(c *gin.Context) {
 	var req struct {
 		UserID string `json:"user_id" binding:"required"`
@@ -1241,6 +1277,7 @@ func checkStars(c *gin.Context) {
 	// Mock check: user_id "ezhik_tester" is always premium
 	if req.UserID == "ezhik_tester" {
 		premiumUsers[req.UserID] = true
+		savePremiumUsers()
 	}
 
 	isPremium := premiumUsers[req.UserID]
