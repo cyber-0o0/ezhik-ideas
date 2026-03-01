@@ -86,6 +86,7 @@ func main() {
 	r.POST("/api/stars/check", checkStars)
 	r.POST("/api/stars/pay", handleStarsPay)
 	r.POST("/api/pro-brainstorm", handleProBrainstorm)
+	r.POST("/api/supervisor/startup", handleSupervisorStartup)
 	
 	// Email Builder API
 	r.POST("/api/generate", handleEmailGenerate)
@@ -1244,6 +1245,33 @@ func randomString(n int) string {
 		b[i] = letters[time.Now().UnixNano()%int64(len(letters))]
 	}
 	return string(b)
+}
+
+func handleSupervisorStartup(c *gin.Context) {
+	var req struct {
+		UserID string `json:"user_id" binding:"required"`
+		Goal   string `json:"goal" binding:"required"`
+	}
+	if err := c.ShouldBindJSON(&req); err != nil {
+		c.JSON(http.StatusBadRequest, gin.H{"error": "User ID and Goal are required"})
+		return
+	}
+
+	if !premiumUsers[req.UserID] {
+		c.JSON(http.StatusPaymentRequired, gin.H{"error": "Premium required. Buy Stars to unlock the Supervisor!"})
+		return
+	}
+
+	systemPrompt := `Ты - Supervisor Agent (v2.7). Твоя задача: разработать полный пакет для стартапа на основе цели пользователя. 
+Ты координируешь работу трех специалистов:
+1. NamerAgent: придумывает 3 креативных названия.
+2. MarketAgent: анализирует ЦА и дает советы по маркетингу.
+3. DesignAgent: описывает визуальный стиль (включая PSX-стилистику, если уместно).
+
+Верни результат в структурированном виде на русском языке.`
+	
+	response := callGroq(req.Goal, systemPrompt)
+	c.JSON(http.StatusOK, gin.H{"response": response})
 }
 
 func handleStarsPay(c *gin.Context) {
