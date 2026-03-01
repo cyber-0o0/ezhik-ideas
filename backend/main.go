@@ -17,6 +17,7 @@ import (
 )
 
 var statsCount int
+var premiumUsers = make(map[string]bool)
 
 type Idea struct {
 	ID        int    `json:"id"`
@@ -67,6 +68,7 @@ func main() {
 	r.POST("/api/ai", handleAI)
 	r.POST("/api/youtube-dl", downloadYouTube)
 	r.POST("/api/code", generateCode)
+	r.POST("/api/stars/check", checkStars)
 	
 	// Email Builder API
 	r.POST("/api/generate", handleEmailGenerate)
@@ -77,6 +79,9 @@ func main() {
 	// Serve frontend
 	r.GET("/", func(c *gin.Context) {
 		c.File("./frontend/index.html")
+	})
+	r.GET("/upload", func(c *gin.Context) {
+		c.File("./frontend/upload.html")
 	})
 	r.GET("/style.css", func(c *gin.Context) {
 		c.File("./frontend/style.css")
@@ -1222,6 +1227,27 @@ func randomString(n int) string {
 		b[i] = letters[time.Now().UnixNano()%int64(len(letters))]
 	}
 	return string(b)
+}
+
+func checkStars(c *gin.Context) {
+	var req struct {
+		UserID string `json:"user_id" binding:"required"`
+	}
+	if err := c.ShouldBindJSON(&req); err != nil {
+		c.JSON(http.StatusBadRequest, gin.H{"error": "User ID is required"})
+		return
+	}
+
+	// Mock check: user_id "ezhik_tester" is always premium
+	if req.UserID == "ezhik_tester" {
+		premiumUsers[req.UserID] = true
+	}
+
+	isPremium := premiumUsers[req.UserID]
+	c.JSON(http.StatusOK, gin.H{
+		"is_premium": isPremium,
+		"user_id":    req.UserID,
+	})
 }
 
 func getString(data map[string]interface{}, key, def string) string {
