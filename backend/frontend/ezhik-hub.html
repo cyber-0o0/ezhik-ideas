@@ -1,0 +1,709 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+  <title>Ezhik AI Hub 🐡</title>
+  <link rel="stylesheet" href="style.css">
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+  <style>
+    :root {
+      --bg-primary: #0a0a0f;
+      --bg-secondary: #12121a;
+      --bg-card: rgba(255, 255, 255, 0.03);
+      --accent: #8b5cf6;
+      --accent-glow: rgba(139, 92, 246, 0.4);
+      --accent-secondary: #06b6d4;
+      --text-primary: #f8fafc;
+      --text-secondary: #94a3b8;
+      --border: rgba(255, 255, 255, 0.08);
+    }
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+    body {
+      font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
+      background: var(--bg-primary);
+      min-height: 100vh;
+      color: var(--text-primary);
+      padding-bottom: 100px;
+    }
+    body::before {
+      content: '';
+      position: fixed;
+      top: 0; left: 0; right: 0; bottom: 0;
+      background: 
+        radial-gradient(ellipse 80% 50% at 20% 40%, rgba(139, 92, 246, 0.15) 0%, transparent 50%),
+        radial-gradient(ellipse 60% 40% at 80% 20%, rgba(6, 182, 212, 0.1) 0%, transparent 50%);
+      pointer-events: none;
+      z-index: -1;
+    }
+    .header {
+      background: rgba(10, 10, 15, 0.8);
+      backdrop-filter: blur(20px);
+      padding: 20px;
+      border-bottom: 1px solid var(--border);
+      position: sticky;
+      top: 0;
+      z-index: 100;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 12px;
+    }
+    .header-avatar {
+      width: 48px;
+      height: 48px;
+      background: linear-gradient(135deg, var(--accent), var(--accent-secondary));
+      border-radius: 12px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 24px;
+      box-shadow: 0 0 20px var(--accent-glow);
+    }
+    .header h1 { font-size: 20px; font-weight: 700; }
+    .header p { font-size: 12px; color: var(--text-secondary); }
+    
+    /* Tabs */
+    .tabs {
+      display: flex;
+      gap: 6px;
+      padding: 12px 16px;
+      overflow-x: auto;
+      background: var(--bg-secondary);
+      border-bottom: 1px solid var(--border);
+      -webkit-overflow-scrolling: touch;
+      scrollbar-width: none;
+    }
+    .tabs::-webkit-scrollbar { display: none; }
+    .tab {
+      padding: 10px 14px;
+      background: transparent;
+      border: 1px solid var(--border);
+      color: var(--text-secondary);
+      font-size: 12px;
+      font-weight: 500;
+      cursor: pointer;
+      white-space: nowrap;
+      border-radius: 12px;
+      transition: all 0.25s cubic-bezier(0.4, 0, 0.2, 1);
+      display: flex;
+      align-items: center;
+      gap: 6px;
+    }
+    .tab:hover { background: var(--bg-card); transform: translateY(-1px); }
+    .tab.active {
+      background: linear-gradient(135deg, var(--accent), #7c3aed);
+      color: white;
+      border-color: transparent;
+      box-shadow: 0 4px 15px var(--accent-glow);
+    }
+    
+    /* Content */
+    .content { padding: 20px; }
+    .tab-content { display: none; animation: fadeIn 0.3s ease; }
+    .tab-content.active { display: block; }
+    @keyframes fadeIn { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: translateY(0); } }
+    
+    /* Common */
+    .card {
+      background: var(--bg-card);
+      border: 1px solid var(--border);
+      border-radius: 16px;
+      padding: 20px;
+      margin-bottom: 15px;
+      backdrop-filter: blur(10px);
+      transition: all 0.25s;
+    }
+    .card:hover {
+      border-color: rgba(255,255,255,0.15);
+      transform: translateY(-2px);
+      box-shadow: 0 8px 30px rgba(0, 0, 0, 0.3);
+    }
+    .btn {
+      background: linear-gradient(135deg, var(--accent), #7c3aed);
+      color: white;
+      border: none;
+      padding: 14px 24px;
+      border-radius: 12px;
+      font-size: 14px;
+      font-weight: 600;
+      cursor: pointer;
+      width: 100%;
+      transition: all 0.25s cubic-bezier(0.4, 0, 0.2, 1);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 8px;
+    }
+    .btn:hover { transform: translateY(-2px); box-shadow: 0 8px 25px var(--accent-glow); }
+    .btn:active { transform: translateY(0); }
+    .btn:disabled { opacity: 0.6; cursor: not-allowed; transform: none; box-shadow: none; }
+    .btn-secondary { background: var(--bg-secondary); border: 1px solid var(--border); color: var(--text-secondary); }
+    
+    input, select, textarea {
+      width: 100%;
+      padding: 14px 16px;
+      background: var(--bg-secondary);
+      border: 1px solid var(--border);
+      border-radius: 12px;
+      color: var(--text-primary);
+      font-size: 14px;
+      margin-bottom: 12px;
+      transition: all 0.2s;
+      font-family: inherit;
+    }
+    input:focus, select:focus, textarea:focus { outline: none; border-color: var(--accent); box-shadow: 0 0 0 3px var(--accent-glow); }
+    input::placeholder, textarea::placeholder { color: #64748b; }
+    select { appearance: none; background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='12' fill='%2394a3b8' viewBox='0 0 16 16'%3E%3Cpath d='M8 11L3 6h10l-5 5z'/%3E%3C/svg%3E"); background-repeat: no-repeat; background-position: right 14px center; padding-right: 40px; }
+    textarea { min-height: 100px; resize: vertical; }
+    
+    .result {
+      background: linear-gradient(135deg, rgba(139, 92, 246, 0.1), rgba(6, 182, 212, 0.05));
+      border: 1px solid rgba(139, 92, 246, 0.2);
+      border-radius: 12px;
+      padding: 16px;
+      margin-top: 15px;
+      white-space: pre-wrap;
+      line-height: 1.7;
+      animation: slideIn 0.3s ease;
+    }
+    @keyframes slideIn { from { opacity: 0; transform: translateY(-10px); } to { opacity: 1; transform: translateY(0); } }
+    .result.loading { color: var(--text-secondary); font-style: italic; }
+    
+    .tool-grid {
+      display: grid;
+      grid-template-columns: repeat(2, 1fr);
+      gap: 10px;
+      margin-bottom: 15px;
+    }
+    .tool-item {
+      background: var(--bg-card);
+      border: 1px solid var(--border);
+      border-radius: 12px;
+      padding: 16px 12px;
+      text-align: center;
+      cursor: pointer;
+      transition: all 0.25s cubic-bezier(0.4, 0, 0.2, 1);
+    }
+    .tool-item:hover { background: rgba(139, 92, 246, 0.15); border-color: var(--accent); transform: translateY(-3px) scale(1.02); box-shadow: 0 8px 25px rgba(139, 92, 246, 0.2); }
+    .tool-icon { font-size: 28px; margin-bottom: 8px; display: block; animation: bounce 2s infinite; }
+    @keyframes bounce { 0%, 100% { transform: translateY(0); } 50% { transform: translateY(-5px); } }
+    .tool-name { font-size: 12px; color: var(--text-secondary); font-weight: 500; }
+    
+    /* Stats */
+    .stats-bar {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 10px;
+      padding: 16px;
+      background: var(--bg-card);
+      border: 1px solid var(--border);
+      border-radius: 16px;
+      margin-bottom: 20px;
+    }
+    .stat { text-align: center; padding: 12px 8px; background: var(--bg-secondary); border-radius: 12px; transition: all 0.2s; }
+    .stat:hover { transform: scale(1.02); background: rgba(255,255,255,0.05); }
+    .stat-num { font-size: 24px; font-weight: 700; background: linear-gradient(135deg, var(--accent), var(--accent-secondary)); -webkit-background-clip: text; -webkit-text-fill-color: transparent; background-clip: text; }
+    .stat-label { font-size: 10px; color: var(--text-secondary); text-transform: uppercase; letter-spacing: 0.5px; margin-top: 4px; }
+    
+    /* History */
+    .history-item { padding: 14px; border-bottom: 1px solid var(--border); transition: all 0.2s; }
+    .history-item:last-child { border-bottom: none; }
+    .history-item:hover { background: rgba(255,255,255,0.03); }
+    .history-category { font-size: 10px; color: var(--accent); text-transform: uppercase; font-weight: 600; letter-spacing: 0.5px; }
+    .history-text { font-size: 13px; color: var(--text-secondary); margin-top: 6px; line-height: 1.5; }
+    
+    /* Password */
+    .password-display {
+      font-family: 'Courier New', monospace;
+      font-size: 18px;
+      text-align: center;
+      padding: 20px;
+      background: var(--bg-secondary);
+      border: 1px solid var(--border);
+      border-radius: 12px;
+      letter-spacing: 2px;
+      margin-bottom: 12px;
+      color: var(--accent);
+    }
+    
+    /* Chat */
+    .chat-messages {
+      max-height: 350px;
+      overflow-y: auto;
+      margin-bottom: 12px;
+      display: flex;
+      flex-direction: column;
+      gap: 10px;
+    }
+    .chat-msg { padding: 12px 16px; border-radius: 16px; max-width: 85%; font-size: 14px; line-height: 1.5; animation: fadeIn 0.3s ease; }
+    .chat-msg.bot { background: linear-gradient(135deg, rgba(139, 92, 246, 0.15), rgba(6, 182, 212, 0.1)); border: 1px solid rgba(139, 92, 246, 0.2); align-self: flex-start; border-bottom-left-radius: 4px; }
+    .chat-msg.user { background: var(--bg-card); border: 1px solid var(--border); align-self: flex-end; border-bottom-right-radius: 4px; }
+    
+    /* Range slider */
+    input[type="range"] { -webkit-appearance: none; background: var(--bg-secondary); border-radius: 10px; height: 8px; padding: 0; border: none; }
+    input[type="range"]::-webkit-slider-thumb { -webkit-appearance: none; width: 20px; height: 20px; background: linear-gradient(135deg, var(--accent), #7c3aed); border-radius: 50%; cursor: pointer; box-shadow: 0 0 10px var(--accent-glow); }
+    .range-row { display: flex; align-items: center; gap: 12px; margin-bottom: 12px; }
+    .range-row input { flex: 1; margin: 0; }
+    .range-value { min-width: 30px; text-align: center; font-weight: 600; color: var(--accent); }
+  </style>
+</head>
+<body>
+  <div class="header">
+    <div class="header-avatar">🐡</div>
+    <div>
+      <h1>Ezhik AI Hub</h1>
+      <p>Твой личный AI-ассистент</p>
+    </div>
+  </div>
+  
+  <div class="tabs">
+    <button class="tab active" data-tab="ideas">💡 Идеи</button>
+    <button class="tab" data-tab="brainstorm">🧠 Brainstorm</button>
+    <button class="tab" data-tab="names">🎯 Названия</button>
+    <button class="tab" data-tab="slogans">📝 Слоганы</button>
+    <button class="tab" data-tab="chat">💬 Чат</button>
+    <button class="tab" data-tab="content">📰 Контент</button>
+    <button class="tab" data-tab="random">🎲 Рандом</button>
+    <button class="tab" data-tab="password">🔐 Пароли</button>
+  </div>
+  
+  <div class="content">
+    <div class="stats-bar">
+      <div class="stat">
+        <div class="stat-num" id="stat-ideas">0</div>
+        <div class="stat-label">Идей</div>
+      </div>
+      <div class="stat">
+        <div class="stat-num" id="stat-brainstorms">0</div>
+        <div class="stat-label">Brainstorms</div>
+      </div>
+      <div class="stat">
+        <div class="stat-num" id="stat-chats">0</div>
+        <div class="stat-label">Чатов</div>
+      </div>
+    </div>
+    
+    <!-- Идеи -->
+    <div class="tab-content active" id="tab-ideas">
+      <div class="card">
+        <select id="category">
+          <option value="бизнес">💼 Бизнес</option>
+          <option value="стартап">🚀 Стартап</option>
+          <option value="контент">📺 Контент</option>
+          <option value="3d">🎨 3D-проект</option>
+          <option value="код">💻 IT-проект</option>
+          <option value="маркетинг">📣 Маркетинг</option>
+        </select>
+        <button class="btn" id="generate-btn">Сгенерировать идею ✨</button>
+      </div>
+      <div id="idea-result" class="result" style="display:none;"></div>
+      <div class="card" id="history-card">
+        <h3 style="margin-bottom: 12px;">📜 История</h3>
+        <div id="history-list"></div>
+      </div>
+    </div>
+    
+    <!-- Brainstorm -->
+    <div class="tab-content" id="tab-brainstorm">
+      <div class="card">
+        <textarea id="brainstorm-input" placeholder="Опиши свою идею или проблему..."></textarea>
+        <select id="brainstorm-type">
+          <option value="develop">Развить идею</option>
+          <option value="questions">Задать вопросы</option>
+          <option value="features">Предложить фичи</option>
+          <option value="monetize">Придумать монетизацию</option>
+          <option value="audience">Определить ЦА</option>
+        </select>
+        <button class="btn" id="brainstorm-btn">Думаю 🧠</button>
+      </div>
+      <div id="brainstorm-result" class="result" style="display:none;"></div>
+    </div>
+    
+    <!-- Названия -->
+    <div class="tab-content" id="tab-names">
+      <div class="card">
+        <input type="text" id="names-input" placeholder="О чем проект? (например: приложение для доставки еды)">
+        <select id="names-style">
+          <option value="tech">Технологичный</option>
+          <option value="friendly">Дружелюбный</option>
+          <option value="premium">Премиум</option>
+          <option value="fun">Весёлый</option>
+        </select>
+        <button class="btn" id="names-btn">Придумать названия 🎯</button>
+      </div>
+      <div id="names-result" class="result" style="display:none;"></div>
+    </div>
+    
+    <!-- Слоганы -->
+    <div class="tab-content" id="tab-slogans">
+      <div class="card">
+        <input type="text" id="slogans-input" placeholder="Название бренда или продукта">
+        <textarea id="slogans-desc" placeholder="Описание (что делаешь, для кого)"></textarea>
+        <button class="btn" id="slogans-btn">Придумать слоганы 📝</button>
+      </div>
+      <div id="slogans-result" class="result" style="display:none;"></div>
+    </div>
+    
+    <!-- Чат -->
+    <div class="tab-content" id="tab-chat">
+      <div class="card">
+        <div class="chat-messages" id="chat-messages"></div>
+        <div style="display:flex;gap:10px;">
+          <input type="text" id="chat-input" placeholder="Напиши сообщение..." style="flex:1;margin:0;">
+          <button class="btn" id="chat-btn" style="width:auto;">Отправить</button>
+        </div>
+      </div>
+    </div>
+    
+    <!-- Контент -->
+    <div class="tab-content" id="tab-content">
+      <div class="card">
+        <input type="text" id="content-topic" placeholder="О чём пост?">
+        <select id="content-platform">
+          <option value="telegram">Telegram</option>
+          <option value="twitter">Twitter/X</option>
+          <option value="instagram">Instagram</option>
+          <option value="linkedin">LinkedIn</option>
+        </select>
+        <select id="content-tone">
+          <option value="friendly">Дружелюбный</option>
+          <option value="professional">Профессиональный</option>
+          <option value="humor">С юмором</option>
+          <option value="expert">Экспертный</option>
+        </select>
+        <button class="btn" id="content-btn">Создать пост 📰</button>
+      </div>
+      <div id="content-result" class="result" style="display:none;"></div>
+    </div>
+    
+    <!-- Рандом -->
+    <div class="tab-content" id="tab-random">
+      <div class="tool-grid">
+        <div class="tool-item" onclick="generateRandom('joke')">
+          <div class="tool-icon">😂</div>
+          <div class="tool-name">Шутка</div>
+        </div>
+        <div class="tool-item" onclick="generateRandom('fact')">
+          <div class="tool-icon">💡</div>
+          <div class="tool-name">Факт</div>
+        </div>
+        <div class="tool-item" onclick="generateRandom('insight')">
+          <div class="tool-icon">🤔</div>
+          <div class="tool-name">Инсайт</div>
+        </div>
+        <div class="tool-item" onclick="generateRandom('tip')">
+          <div class="tool-icon">⚡</div>
+          <div class="tool-name">Совет</div>
+        </div>
+      </div>
+      <div id="random-result" class="result" style="display:none;"></div>
+    </div>
+    
+    <!-- Пароли -->
+    <div class="tab-content" id="tab-password">
+      <div class="card">
+        <div class="password-display" id="password-display">---</div>
+        <div style="display:flex;gap:10px;margin-bottom:12px;">
+          <input type="range" id="password-length" min="8" max="32" value="16" style="flex:1;margin:0;">
+          <span id="password-length-val">16</span>
+        </div>
+        <div class="tool-grid">
+          <div class="tool-item" onclick="generatePassword()">
+            <div class="tool-icon">🎲</div>
+            <div class="tool-name">Сгенерировать</div>
+          </div>
+          <div class="tool-item" onclick="copyPassword()">
+            <div class="tool-icon">📋</div>
+            <div class="tool-name">Копировать</div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <script>
+    const API_URL = window.location.origin;
+    const Telegram = window.Telegram?.WebApp;
+    if (Telegram) { Telegram.expand(); Telegram.ready(); }
+
+    // Stats
+    let stats = { ideas: 0, brainstorms: 0, chats: 0 };
+    let chatHistory = [];
+
+    // Tab switching
+    document.querySelectorAll('.tab').forEach(tab => {
+      tab.addEventListener('click', () => {
+        document.querySelectorAll('.tab').forEach(t => t.classList.remove('active'));
+        document.querySelectorAll('.tab-content').forEach(c => c.classList.remove('active'));
+        tab.classList.add('active');
+        document.getElementById('tab-' + tab.dataset.tab).classList.add('active');
+      });
+    });
+
+    // Load stats
+    loadStats();
+    function loadStats() {
+      try {
+        const saved = JSON.parse(localStorage.getItem('ezhik_stats') || '{}');
+        stats = { ...stats, ...saved };
+        updateStatsDisplay();
+      } catch(e) {}
+    }
+    function updateStatsDisplay() {
+      document.getElementById('stat-ideas').textContent = stats.ideas;
+      document.getElementById('stat-brainstorms').textContent = stats.brainstorms;
+      document.getElementById('stat-chats').textContent = stats.chats;
+    }
+    function saveStats() {
+      localStorage.setItem('ezhik_stats', JSON.stringify(stats));
+      updateStatsDisplay();
+    }
+
+    // AI Call wrapper
+    async function callAI(prompt, systemPrompt = 'Ты полезный AI-ассистент. Отвечай на русском языке кратко и по делу.') {
+      const response = await fetch(API_URL + '/api/ai', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ prompt, systemPrompt })
+      });
+      if (!response.ok) throw new Error('API error');
+      const data = await response.json();
+      return data.response;
+    }
+
+    // Ideas
+    document.getElementById('generate-btn').addEventListener('click', async () => {
+      const btn = document.getElementById('generate-btn');
+      const result = document.getElementById('idea-result');
+      const category = document.getElementById('category').value;
+      
+      btn.disabled = true;
+      btn.textContent = 'Думаю... 💭';
+      result.style.display = 'block';
+      result.className = 'result loading';
+      result.textContent = 'Ежик думает...';
+      
+      try {
+        const idea = await callAI(
+          `Придумай одну оригинальную идею для ${category}. Это должно быть что-то конкретное и полезное.`,
+          'Ты креативный генератор идей. Придумывай интересные, оригинальные идеи.'
+        );
+        result.className = 'result';
+        result.textContent = idea;
+        stats.ideas++;
+        saveStats();
+      } catch(e) {
+        result.textContent = 'Ошибка: ' + e.message;
+      }
+      btn.disabled = false;
+      btn.textContent = 'Сгенерировать идею ✨';
+    });
+
+    // Brainstorm
+    document.getElementById('brainstorm-btn').addEventListener('click', async () => {
+      const btn = document.getElementById('brainstorm-btn');
+      const result = document.getElementById('brainstorm-result');
+      const input = document.getElementById('brainstorm-input').value;
+      const type = document.getElementById('brainstorm-type').value;
+      
+      if (!input) { result.textContent = 'Напиши идею!'; result.style.display = 'block'; return; }
+      
+      const prompts = {
+        develop: `Разверни и улучши эту идею: "${input}". Добавь детали, варианты реализации.`,
+        questions: `Задай 5-7 уточняющих вопросов по этой идее: "${input}". Чтобы понять, стоит ли её реализовывать.`,
+        features: `Предложи 10 фич для: "${input}". От базовых до продвинутых.`,
+        monetize: `Придумай 7-10 способов монетизации для: "${input}".`,
+        audience: `Опиши целевую аудиторию для: "${input}". Возраст, интересы, боли.`
+      };
+      
+      btn.disabled = true;
+      btn.textContent = 'Думаю... 🧠';
+      result.style.display = 'block';
+      result.className = 'result loading';
+      result.textContent = 'Ежик анализирует...';
+      
+      try {
+        const response = await callAI(prompts[type], 'Ты эксперт по продуктовой разработке. Давай полезные, структурированные ответы.');
+        result.className = 'result';
+        result.textContent = response;
+        stats.brainstorms++;
+        saveStats();
+      } catch(e) {
+        result.textContent = 'Ошибка: ' + e.message;
+      }
+      btn.disabled = false;
+      btn.textContent = 'Думаю 🧠';
+    });
+
+    // Names
+    document.getElementById('names-btn').addEventListener('click', async () => {
+      const btn = document.getElementById('names-btn');
+      const result = document.getElementById('names-result');
+      const input = document.getElementById('names-input').value;
+      const style = document.getElementById('names-style').value;
+      
+      if (!input) { result.textContent = 'Опиши проект!'; result.style.display = 'block'; return; }
+      
+      btn.disabled = true;
+      btn.textContent = 'Придумываю... 🎯';
+      result.style.display = 'block';
+      result.className = 'result loading';
+      
+      try {
+        const stylePrompts = {
+          tech: 'Технологичные, современные, возможно с цифрами',
+          friendly: 'Дружелюбные, тёплые, запоминающиеся',
+          premium: 'Премиум, элегантные, дорогие',
+          fun: 'Весёлые, игривые, яркие'
+        };
+        const response = await callAI(
+          `Придумай 10 названий для: "${input}". Стиль: ${stylePrompts[style]}. Отвечай списком, кратко.`,
+          'Ты эксперт по неймингу. Придумывай крутые названия.'
+        );
+        result.className = 'result';
+        result.textContent = response;
+      } catch(e) {
+        result.textContent = 'Ошибка: ' + e.message;
+      }
+      btn.disabled = false;
+      btn.textContent = 'Придумать названия 🎯';
+    });
+
+    // Slogans
+    document.getElementById('slogans-btn').addEventListener('click', async () => {
+      const btn = document.getElementById('slogans-btn');
+      const result = document.getElementById('slogans-result');
+      const input = document.getElementById('slogans-input').value;
+      const desc = document.getElementById('slogans-desc').value;
+      
+      if (!input) { result.textContent = 'Напиши название!'; result.style.display = 'block'; return; }
+      
+      btn.disabled = true;
+      result.style.display = 'block';
+      result.className = 'result loading';
+      
+      try {
+        const response = await callAI(
+          `Придумай 8 слоганов для: "${input}". ${desc ? 'Контекст: ' + desc : ''} Короткие, запоминающиеся.`,
+          'Ты эксперт по маркетингу. Придумывай цепляющие слоганы.'
+        );
+        result.className = 'result';
+        result.textContent = response;
+      } catch(e) {
+        result.textContent = 'Ошибка: ' + e.message;
+      }
+      btn.disabled = false;
+    });
+
+    // Chat
+    function addChatMessage(text, isUser = false) {
+      const container = document.getElementById('chat-messages');
+      const div = document.createElement('div');
+      div.className = 'chat-msg ' + (isUser ? 'user' : 'bot');
+      div.textContent = text;
+      container.appendChild(div);
+      container.scrollTop = container.scrollHeight;
+    }
+
+    document.getElementById('chat-btn').addEventListener('click', async () => {
+      const input = document.getElementById('chat-input');
+      const text = input.value.trim();
+      if (!text) return;
+      
+      addChatMessage(text, true);
+      input.value = '';
+      stats.chats++;
+      saveStats();
+      
+      const systemPrompt = 'Ты Ezhik — дружелюбный AI-ассистент. Отвечай кратко, с юмором, по-русски. Будь полезным.';
+      chatHistory.push({ role: 'user', content: text });
+      
+      try {
+        const historyText = chatHistory.map(m => m.role + ': ' + m.content).join('\n');
+        const response = await callAI(historyText, systemPrompt);
+        addChatMessage(response);
+        chatHistory.push({ role: 'assistant', content: response });
+      } catch(e) {
+        addChatMessage('Ошибка: ' + e.message);
+      }
+    });
+
+    // Content
+    document.getElementById('content-btn').addEventListener('click', async () => {
+      const btn = document.getElementById('content-btn');
+      const result = document.getElementById('content-result');
+      const topic = document.getElementById('content-topic').value;
+      const platform = document.getElementById('content-platform').value;
+      const tone = document.getElementById('content-tone').value;
+      
+      if (!topic) { result.textContent = 'Напиши тему!'; result.style.display = 'block'; return; }
+      
+      btn.disabled = true;
+      result.style.display = 'block';
+      result.className = 'result loading';
+      
+      const platformLimits = { telegram: 'до 300 символов', twitter: 'до 280 символов', instagram: 'с эмодзи', linkedin: 'профессионально' };
+      
+      try {
+        const response = await callAI(
+          `Напиши пост для ${platform} на тему: "${topic}". Тон: ${tone}. Формат: ${platformLimits[platform]}.`,
+          'Ты SMM-эксперт. Пиши цепляющие посты.'
+        );
+        result.className = 'result';
+        result.textContent = response;
+      } catch(e) {
+        result.textContent = 'Ошибка: ' + e.message;
+      }
+      btn.disabled = false;
+    });
+
+    // Random
+    async function generateRandom(type) {
+      const result = document.getElementById('random-result');
+      result.style.display = 'block';
+      result.className = 'result loading';
+      
+      const prompts = {
+        joke: 'Расскажи одну смешную шутку про программистов или AI.',
+        fact: 'Расскажи один интересный факт о технологиях или науке.',
+        insight: 'Дай один полезный инсайт про продуктивность или мышление.',
+        tip: 'Дай один практический совет по программированию или дизайну.'
+      };
+      
+      try {
+        const response = await callAI(prompts[type], 'Отвечай кратко и по делу.');
+        result.className = 'result';
+        result.textContent = response;
+      } catch(e) {
+        result.textContent = 'Ошибка: ' + e.message;
+      }
+    }
+
+    // Password
+    document.getElementById('password-length').addEventListener('input', (e) => {
+      document.getElementById('password-length-val').textContent = e.target.value;
+    });
+
+    function generatePassword() {
+      const length = parseInt(document.getElementById('password-length').value);
+      const chars = 'abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789!@#$%^&*()_+-=[]{}|;:,.<>?';
+      let password = '';
+      for (let i = 0; i < length; i++) {
+        password += chars.charAt(Math.floor(Math.random() * chars.length));
+      }
+      document.getElementById('password-display').textContent = password;
+    }
+
+    function copyPassword() {
+      const password = document.getElementById('password-display').textContent;
+      if (password === '---') return;
+      navigator.clipboard.writeText(password);
+      alert('Скопировано!');
+    }
+
+    // Init password
+    generatePassword();
+  </script>
+</body>
+</html>

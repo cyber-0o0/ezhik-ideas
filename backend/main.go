@@ -95,6 +95,7 @@ func main() {
 	// UCP (Universal Commerce Protocol) mock for B2A discovery
 	r.GET("/.well-known/ucp", handleUCPDiscovery)
 	r.GET("/.well-known/agent.json", handleAgentCard)
+	r.POST("/api/procurement/discover", handleProcurement)
 	
 	// Email Builder API
 	r.POST("/api/generate", handleEmailGenerate)
@@ -102,17 +103,29 @@ func main() {
 	r.POST("/api/upload", handleImageUpload)
 	r.GET("/storage/*path", handleServeImage)
 	
+    r.Static("/email-assets", "./frontend/assets")
+    r.Static("/assets", "./frontend/assets")
+	
 	// Serve frontend
 	r.GET("/", func(c *gin.Context) {
+		c.File("./frontend/ezhik-hub.html")
+	})
+	r.GET("/email", func(c *gin.Context) {
 		c.File("./frontend/index.html")
 	})
 	r.GET("/upload", func(c *gin.Context) {
 		c.File("./frontend/upload.html")
 	})
 	r.GET("/style.css", func(c *gin.Context) {
-		c.File("./frontend/style.css")
+		c.File("./frontend/style-ezhik.css")
 	})
 	r.GET("/app.js", func(c *gin.Context) {
+		c.File("./frontend/app-ezhik.js")
+	})
+	r.GET("/email/style.css", func(c *gin.Context) {
+		c.File("./frontend/style.css")
+	})
+	r.GET("/email/app.js", func(c *gin.Context) {
 		c.File("./frontend/app.js")
 	})
 
@@ -1464,6 +1477,18 @@ func handleUCPDiscovery(c *gin.Context) {
 					"currency": "STARS",
 				},
 			},
+			{
+				"id": "outreach-drafter",
+				"name": "Ezhik Outreach Drafter",
+				"description": "Crafts professional cold outreach emails for your project.",
+				"endpoint": "/api/supervisor/marketing",
+				"auth": "stars_token",
+				"pricing": map[string]interface{}{
+					"unit": "draft",
+					"amount": 10,
+					"currency": "STARS",
+				},
+			},
 		},
 		"capabilities": []string{"discovery", "quote", "purchase"},
 	}
@@ -1483,4 +1508,26 @@ func handleAgentCard(c *gin.Context) {
 		},
 	}
 	c.JSON(http.StatusOK, card)
+}
+
+func handleProcurement(c *gin.Context) {
+	var req struct {
+		TargetURL string `json:"target_url" binding:"required"`
+	}
+	if err := c.ShouldBindJSON(&req); err != nil {
+		c.JSON(http.StatusBadRequest, gin.H{"error": "Target URL is required"})
+		return
+	}
+
+	// In a real scenario, this would be a real GET request to the target's UCP endpoint
+	// Here we simulate the result
+	simulatedResult := map[string]interface{}{
+		"status": "discovered",
+		"target": req.TargetURL,
+		"manifest": map[string]interface{}{
+			"services": []string{"texture_generation", "model_optimization"},
+			"currency": "STARS",
+		},
+	}
+	c.JSON(http.StatusOK, simulatedResult)
 }
