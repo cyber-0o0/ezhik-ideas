@@ -92,6 +92,10 @@ func main() {
 	r.POST("/api/supervisor/pce", handlePlannerCriticExecutor)
 	r.POST("/api/supervisor/ralph", handleRalphMode)
 	
+	// UCP (Universal Commerce Protocol) mock for B2A discovery
+	r.GET("/.well-known/ucp", handleUCPDiscovery)
+	r.GET("/.well-known/agent.json", handleAgentCard)
+	
 	// Email Builder API
 	r.POST("/api/generate", handleEmailGenerate)
 	r.POST("/api/ai-generate", handleAIGenerate)
@@ -1442,4 +1446,41 @@ func handleRalphMode(c *gin.Context) {
 	prompt := fmt.Sprintf("PRD: %s\n\nTask: %s", req.PRD, req.Task)
 	response := callGroq(c.Request.Context(), prompt, systemPrompt)
 	c.JSON(http.StatusOK, gin.H{"response": response})
+}
+
+func handleUCPDiscovery(c *gin.Context) {
+	discovery := map[string]interface{}{
+		"version": "2026.1",
+		"services": []map[string]interface{}{
+			{
+				"id": "startup-builder",
+				"name": "Ezhik Startup Builder",
+				"description": "Comprehensive business planning by a parallel supervisor of AI specialists.",
+				"endpoint": "/api/supervisor/startup",
+				"auth": "stars_token",
+				"pricing": map[string]interface{}{
+					"unit": "package",
+					"amount": 50,
+					"currency": "STARS",
+				},
+			},
+		},
+		"capabilities": []string{"discovery", "quote", "purchase"},
+	}
+	c.JSON(http.StatusOK, discovery)
+}
+
+func handleAgentCard(c *gin.Context) {
+	card := map[string]interface{}{
+		"name": "Ezhik Agent",
+		"description": "Autonomous startup planner and market analyst.",
+		"capabilities": []string{"business_planning", "naming", "market_analysis"},
+		"schemas": map[string]interface{}{
+			"startup_goal": "string",
+		},
+		"endpoints": map[string]string{
+			"orchestration": "/api/supervisor/startup",
+		},
+	}
+	c.JSON(http.StatusOK, card)
 }
