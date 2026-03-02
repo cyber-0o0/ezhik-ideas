@@ -2,6 +2,7 @@ package main
 
 import (
 	"bytes"
+	"context"
 	"encoding/json"
 	"fmt"
 	"io"
@@ -189,7 +190,7 @@ func downloadYouTube(c *gin.Context) {
 
 func getIdea(c *gin.Context) {
 	category := c.DefaultQuery("category", "бизнес")
-	ideaText := generateIdea(category)
+	ideaText := generateIdea(c.Request.Context(), category)
 	statsCount++
 	
 	c.JSON(http.StatusOK, gin.H{
@@ -225,14 +226,12 @@ func handleAI(c *gin.Context) {
 		systemPrompt = "Ты полезный AI-ассистент. Отвечай на русском языке."
 	}
 	
-	response := callGroq(req.Prompt, systemPrompt)
+	response := callGroq(c.Request.Context(), req.Prompt, systemPrompt)
 	c.JSON(http.StatusOK, gin.H{"response": response})
 }
 
-func callGroq(prompt, systemPrompt string) string {
+func callGroq(ctx context.Context, prompt, systemPrompt string) string {
 	client := &http.Client{}
-	
-	log.Println("GROQ_API_KEY:", GroqAPIKey)  // Debug
 	
 	reqBody := GroqRequest{
 		Model: "llama-3.3-70b-versatile",
@@ -243,7 +242,10 @@ func callGroq(prompt, systemPrompt string) string {
 	}
 	
 	jsonData, _ := json.Marshal(reqBody)
-	req, _ := http.NewRequest("POST", "https://api.groq.com/openai/v1/chat/completions", bytes.NewBuffer(jsonData))
+	req, err := http.NewRequestWithContext(ctx, "POST", "https://api.groq.com/openai/v1/chat/completions", bytes.NewBuffer(jsonData))
+	if err != nil {
+		return "Error: " + err.Error()
+	}
 	req.Header.Set("Authorization", "Bearer "+GroqAPIKey)
 	req.Header.Set("Content-Type", "application/json")
 	
@@ -252,8 +254,6 @@ func callGroq(prompt, systemPrompt string) string {
 		return "Error: " + err.Error()
 	}
 	defer resp.Body.Close()
-	
-	log.Println("Response status:", resp.StatusCode)  // Debug
 	
 	var groqResp GroqResponse
 	json.NewDecoder(resp.Body).Decode(&groqResp)
@@ -303,41 +303,12 @@ func generateCode(c *gin.Context) {
 		return
 	}
 
-	client := &http.Client{}
 	prompt := fmt.Sprintf("Generate working code in %s for: %s. Return only the code, no explanations. Include comments if needed. Make it complete and runnable.", req.Language, req.Task)
-
-	reqBody := GroqRequest{
-		Model: "llama-3.3-70b-versatile",
-		Messages: []GroqMessage{
-			{Role: "user", Content: prompt},
-		},
-	}
-
-	jsonData, _ := json.Marshal(reqBody)
-	httpReq, _ := http.NewRequest("POST", "https://api.groq.com/openai/v1/chat/completions", bytes.NewBuffer(jsonData))
-	httpReq.Header.Set("Authorization", "Bearer "+GroqAPIKey)
-	httpReq.Header.Set("Content-Type", "application/json")
-
-	resp, err := client.Do(httpReq)
-	if err != nil {
-		c.JSON(http.StatusInternalServerError, gin.H{"error": err.Error()})
-		return
-	}
-	defer resp.Body.Close()
-
-	var groqResp GroqResponse
-	json.NewDecoder(resp.Body).Decode(&groqResp)
-
-	if len(groqResp.Choices) > 0 {
-		c.JSON(http.StatusOK, gin.H{"code": groqResp.Choices[0].Message.Content})
-	} else {
-		c.JSON(http.StatusInternalServerError, gin.H{"error": "No response from AI"})
-	}
+	response := callGroq(c.Request.Context(), prompt, "You are an expert coder.")
+	c.JSON(http.StatusOK, gin.H{"code": response})
 }
 
-func generateIdea(category string) string {
-	client := &http.Client{}
-	
+func generateIdea(ctx context.Context, category string) string {
 	var prompt string
 	switch category {
 	case "psx":
@@ -346,32 +317,7 @@ func generateIdea(category string) string {
 		prompt = "Generate a unique and creative project idea for the category: " + category + ". The idea should be innovative and interesting for an 18-year-old developer and 3D artist. Return only the idea text, no extra fluff."
 	}
 	
-	reqBody := GroqRequest{
-		Model: "llama-3.3-70b-versatile",
-		Messages: []GroqMessage{
-			{Role: "user", Content: prompt},
-		},
-	}
-	
-	jsonData, _ := json.Marshal(reqBody)
-	req, _ := http.NewRequest("POST", "https://api.groq.com/openai/v1/chat/completions", bytes.NewBuffer(jsonData))
-	req.Header.Set("Authorization", "Bearer "+GroqAPIKey)
-	req.Header.Set("Content-Type", "application/json")
-	
-	resp, err := client.Do(req)
-	if err != nil {
-		return "Error generating idea: " + err.Error()
-	}
-	defer resp.Body.Close()
-	
-	var groqResp GroqResponse
-	json.NewDecoder(resp.Body).Decode(&groqResp)
-	
-	if len(groqResp.Choices) > 0 {
-		return groqResp.Choices[0].Message.Content
-	}
-	
-	return "No idea generated today, try again!"
+	return callGroq(ctx, prompt, "You are a creative idea generator.")
 }
 
 // ============ EMAIL BUILDER HANDLERS ============
@@ -1273,7 +1219,7 @@ func handlePlannerCriticExecutor(c *gin.Context) {
 
 Верни итоговый результат на русском языке.`
 	
-	response := callGroq(req.Task, systemPrompt)
+	response := callGroq(c.Request.Context(), req.Task, systemPrompt)
 	c.JSON(http.StatusOK, gin.H{"response": response})
 }
 
@@ -1299,8 +1245,35 @@ func handleSupervisorMarketing(c *gin.Context) {
 3. Визуальный стиль (например, PSX-style скриншот или инфографика).
 Будь креативным и ориентируйся на привлечение первых пользователей.`
 	
-	response := callGroq(req.Goal, systemPrompt)
+	response := callGroq(c.Request.Context(), req.Goal, systemPrompt)
 	c.JSON(http.StatusOK, gin.H{"response": response})
+}
+
+type Job struct {
+	ID           int
+	Specialist   string
+	Prompt       string
+	SystemPrompt string
+}
+
+type JobResult struct {
+	ID         int
+	Specialist string
+	Response   string
+	Error      error
+}
+
+func worker(ctx context.Context, id int, jobs <-chan Job, results chan<- JobResult) {
+	for j := range jobs {
+		select {
+		case <-ctx.Done():
+			results <- JobResult{ID: j.ID, Specialist: j.Specialist, Error: ctx.Err()}
+			return
+		default:
+			response := callGroq(ctx, j.Prompt, j.SystemPrompt)
+			results <- JobResult{ID: j.ID, Specialist: j.Specialist, Response: response}
+		}
+	}
 }
 
 func handleSupervisorStartup(c *gin.Context) {
@@ -1318,18 +1291,55 @@ func handleSupervisorStartup(c *gin.Context) {
 		return
 	}
 
-	systemPrompt := `Ты - Supervisor Agent (v2.7.2). Твоя задача: разработать полный пакет для стартапа на основе цели пользователя. 
-Ты координируешь работу пяти специалистов:
-1. NamerAgent: придумывает 3 креативных названия.
-2. MarketAgent: анализирует ЦА и дает советы по маркетингу.
-3. DesignAgent: описывает визуальный стиль (включая PSX-стилистику, если уместно).
-4. TechAgent: подбирает стек технологий (фронтенд, бэкенд, БД).
-5. PitchAgent: составляет структуру питча (проблема, решение, монетизация).
+	specialists := []struct {
+		Name   string
+		Prompt string
+	}{
+		{"Namer", "Придумай 3 креативных названия для этого стартапа."},
+		{"Market", "Проанализируй целевую аудиторию и дай 3 совета по маркетингу."},
+		{"Design", "Опиши визуальный стиль (цвета, шрифты, вайб). Упомяни PSX-эстетику если уместно."},
+		{"Tech", "Подбери стек технологий: фронтенд, бэкенд, база данных."},
+		{"Pitch", "Составь структуру питча: Проблема, Решение, Монетизация."},
+	}
 
-Верни результат в структурированном виде на русском языке.`
+	numJobs := len(specialists)
+	jobs := make(chan Job, numJobs)
+	results := make(chan JobResult, numJobs)
+
+	// Create a context with timeout for the whole orchestration
+	ctx, cancel := context.WithTimeout(c.Request.Context(), 60*time.Second)
+	defer cancel()
+
+	// Start 3 workers
+	for w := 1; w <= 3; w++ {
+		go worker(ctx, w, jobs, results)
+	}
+
+	// Send jobs
+	for i, spec := range specialists {
+		jobs <- Job{
+			ID:           i,
+			Specialist:   spec.Name,
+			Prompt:       req.Goal,
+			SystemPrompt: spec.Prompt + " Отвечай на русском языке.",
+		}
+	}
+	close(jobs)
+
+	// Collect results
+	var finalResponse string
+	finalResponse = "### Пакет стартапа от Supervisor v3.0 (Parallel Orchestration)\n\n"
 	
-	response := callGroq(req.Goal, systemPrompt)
-	c.JSON(http.StatusOK, gin.H{"response": response})
+	for i := 0; i < numJobs; i++ {
+		res := <-results
+		if res.Error != nil {
+			finalResponse += fmt.Sprintf("#### %s: Ошибка: %s\n\n", res.Specialist, res.Error)
+		} else {
+			finalResponse += fmt.Sprintf("#### %s\n%s\n\n", res.Specialist, res.Response)
+		}
+	}
+
+	c.JSON(http.StatusOK, gin.H{"response": finalResponse})
 }
 
 func handleStarsPay(c *gin.Context) {
@@ -1368,7 +1378,7 @@ func handleProBrainstorm(c *gin.Context) {
 	}
 
 	systemPrompt := "Ты экспертный бизнес-аналитик. Проведи глубокий брейншторм идеи пользователя. Выдели: 1. Уникальность, 2. Рыночный потенциал, 3. Риски, 4. Первые шаги."
-	response := callGroq(req.Prompt, systemPrompt)
+	response := callGroq(c.Request.Context(), req.Prompt, systemPrompt)
 	c.JSON(http.StatusOK, gin.H{"response": response})
 }
 
@@ -1429,6 +1439,6 @@ func handleRalphMode(c *gin.Context) {
 Верни только финальный, отполированный результат на русском языке, но добавь краткий лог итерации в начале.`
 	
 	prompt := fmt.Sprintf("PRD: %s\n\nTask: %s", req.PRD, req.Task)
-	response := callGroq(prompt, systemPrompt)
+	response := callGroq(c.Request.Context(), prompt, systemPrompt)
 	c.JSON(http.StatusOK, gin.H{"response": response})
 }
