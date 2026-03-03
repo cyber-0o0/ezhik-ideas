@@ -264,6 +264,7 @@
     <button class="tab" data-tab="slogans">📝 Слоганы</button>
     <button class="tab" data-tab="chat">💬 Чат</button>
     <button class="tab" data-tab="content">📰 Контент</button>
+    <button class="tab" data-tab="b2a">🤖 B2A Schema</button>
     <button class="tab" data-tab="random">🎲 Рандом</button>
     <button class="tab" data-tab="password">🔐 Пароли</button>
   </div>
@@ -375,6 +376,31 @@
         <button class="btn" id="content-btn">Создать пост 📰</button>
       </div>
       <div id="content-result" class="result" style="display:none;"></div>
+    </div>
+    
+    <!-- B2A Schema -->
+    <div class="tab-content" id="tab-b2a">
+      <div class="card">
+        <input type="text" id="b2a-name" placeholder="Название продукта">
+        <textarea id="b2a-desc" placeholder="Описание и характеристики..."></textarea>
+        <div style="display:flex;gap:10px;">
+          <input type="text" id="b2a-price" placeholder="Цена" style="flex:1;">
+          <select id="b2a-currency" style="flex:1;">
+            <option value="TON">TON</option>
+            <option value="USD">USD</option>
+            <option value="RUB">RUB</option>
+          </select>
+        </div>
+        <select id="b2a-type">
+          <option value="3dmodel">🎨 3D Модель</option>
+          <option value="software">💻 Софт / Код</option>
+          <option value="service">🛠 Услуга</option>
+          <option value="product">📦 Товар</option>
+        </select>
+        <button class="btn" id="b2a-btn">Сгенерировать B2A Разметку 🤖</button>
+      </div>
+      <div id="b2a-result" class="result" style="display:none;"></div>
+      <button class="btn btn-secondary" id="b2a-copy-btn" style="display:none;margin-top:10px;">Скопировать код 📋</button>
     </div>
     
     <!-- Рандом -->
@@ -656,6 +682,49 @@
         result.textContent = 'Ошибка: ' + e.message;
       }
       btn.disabled = false;
+    });
+
+    // B2A Schema
+    document.getElementById('b2a-btn').addEventListener('click', async () => {
+      const btn = document.getElementById('b2a-btn');
+      const result = document.getElementById('b2a-result');
+      const copyBtn = document.getElementById('b2a-copy-btn');
+      const name = document.getElementById('b2a-name').value;
+      const desc = document.getElementById('b2a-desc').value;
+      const price = document.getElementById('b2a-price').value;
+      const currency = document.getElementById('b2a-currency').value;
+      const type = document.getElementById('b2a-type').value;
+      
+      if (!name || !desc) { alert('Название и описание обязательны!'); return; }
+      
+      btn.disabled = true;
+      btn.textContent = 'Генерирую... 🤖';
+      result.style.display = 'block';
+      result.className = 'result loading';
+      result.textContent = 'Ежик оптимизирует для агентов...';
+      copyBtn.style.display = 'none';
+      
+      try {
+        const response = await fetch(API_URL + '/api/b2a/schema', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ name, description: desc, price, currency, type })
+        });
+        const data = await response.json();
+        result.className = 'result';
+        result.textContent = data.response;
+        copyBtn.style.display = 'flex';
+      } catch(e) {
+        result.textContent = 'Ошибка: ' + e.message;
+      }
+      btn.disabled = false;
+      btn.textContent = 'Сгенерировать B2A Разметку 🤖';
+    });
+
+    document.getElementById('b2a-copy-btn').addEventListener('click', () => {
+      const text = document.getElementById('b2a-result').textContent;
+      navigator.clipboard.writeText(text);
+      alert('Код скопирован!');
     });
 
     // Random

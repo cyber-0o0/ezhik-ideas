@@ -91,6 +91,7 @@ func main() {
 	r.POST("/api/supervisor/marketing", handleSupervisorMarketing)
 	r.POST("/api/supervisor/pce", handlePlannerCriticExecutor)
 	r.POST("/api/supervisor/ralph", handleRalphMode)
+	r.POST("/api/b2a/schema", handleB2ASchema)
 	
 	// UCP (Universal Commerce Protocol) mock for B2A discovery
 	r.GET("/.well-known/ucp", handleUCPDiscovery)
@@ -1317,6 +1318,7 @@ func handleSupervisorStartup(c *gin.Context) {
 		{"Design", "Опиши визуальный стиль (цвета, шрифты, вайб). Упомяни PSX-эстетику если уместно."},
 		{"Tech", "Подбери стек технологий: фронтенд, бэкенд, база данных."},
 		{"Pitch", "Составь структуру питча: Проблема, Решение, Монетизация."},
+		{"Negotiator", "Предложи стратегию переговоров с инвесторами и партнерами: как обосновать цену и какие условия просить."},
 		{"Outreach", "Напиши черновик холодного письма для привлечения первых клиентов или партнеров."},
 	}
 
@@ -1489,6 +1491,18 @@ func handleUCPDiscovery(c *gin.Context) {
 					"currency": "STARS",
 				},
 			},
+			{
+				"id": "b2a-schema-gen",
+				"name": "Ezhik B2A Schema Generator",
+				"description": "Generates AI-optimized Schema.org JSON-LD for products (B2A/GEO).",
+				"endpoint": "/api/b2a/schema",
+				"auth": "public",
+				"pricing": map[string]interface{}{
+					"unit": "generation",
+					"amount": 0,
+					"currency": "FREE",
+				},
+			},
 		},
 		"capabilities": []string{"discovery", "quote", "purchase"},
 	}
@@ -1505,6 +1519,9 @@ func handleAgentCard(c *gin.Context) {
 		},
 		"endpoints": map[string]string{
 			"orchestration": "/api/supervisor/startup",
+		},
+		"payment": map[string]string{
+			"ton": "UQDqNihspM0odGiyRM2UkmsTa-GjuYY5Vfr1eOn93WRGx6ZL",
 		},
 	}
 	c.JSON(http.StatusOK, card)
@@ -1530,4 +1547,28 @@ func handleProcurement(c *gin.Context) {
 		},
 	}
 	c.JSON(http.StatusOK, simulatedResult)
+}
+
+func handleB2ASchema(c *gin.Context) {
+	var req struct {
+		Name        string `json:"name" binding:"required"`
+		Description string `json:"description" binding:"required"`
+		Price       string `json:"price"`
+		Currency    string `json:"currency"`
+		Type        string `json:"type"` // "3dmodel", "software", "service", "product"
+	}
+	if err := c.ShouldBindJSON(&req); err != nil {
+		c.JSON(http.StatusBadRequest, gin.H{"error": "Name and Description are required"})
+		return
+	}
+
+	systemPrompt := `Ты эксперт по Schema.org и GEO (Generative Engine Optimization). 
+Твоя задача: сгенерировать JSON-LD разметку для продукта, оптимизированную для ИИ-агентов (B2A).
+Используй типы: Product, 3DModel (если применимо), Offer.
+Добавь все возможные технические поля, чтобы ИИ-агенты могли легко парсить характеристики.
+Верни ТОЛЬКО JSON-LD код в теге <script type="application/ld+json">.`
+
+	prompt := fmt.Sprintf("Название: %s\nОписание: %s\nЦена: %s %s\nТип: %s", req.Name, req.Description, req.Price, req.Currency, req.Type)
+	response := callGroq(c.Request.Context(), prompt, systemPrompt)
+	c.JSON(http.StatusOK, gin.H{"response": response})
 }
