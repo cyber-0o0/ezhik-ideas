@@ -1,0 +1,34 @@
+{
+  "name": "Ezhik Agent Storefront",
+  "description": "Autonomous marketplace for 3D assets and AI services by Artem.",
+  "url": "https://ezhikfish.fun:4443/",
+  "version": "1.0.0",
+  "capabilities": {
+    "streaming": true,
+    "b2a_negotiation": true,
+    "stars_payment": true
+  },
+  "skills": [
+    {
+      "id": "email_builder",
+      "name": "AI Email Builder",
+      "description": "Generate professional HTML emails from prompts.",
+      "tags": ["marketing", "email", "ai-gen"]
+    },
+    {
+      "id": "psx_assets",
+      "name": "PSX 3D Asset Sales",
+      "description": "Low-poly 3D assets in retro PlayStation style.",
+      "tags": ["3d", "psx", "retro", "assets"]
+    }
+  ],
+  "securitySchemes": {
+    "stars_token": {
+      "type": "apiKey",
+      "description": "Internal token granted via Telegram Stars payment."
+    }
+  },
+  "payment": {
+    "ton_address": "UQDqNihspM0odGiyRM2UkmsTa-GjuYY5Vfr1eOn93WRGx6ZL"
+  }
+}

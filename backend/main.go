@@ -336,7 +336,13 @@ func generateIdea(ctx context.Context, category string) string {
 		prompt = "Generate a unique and creative project idea for the category: " + category + ". The idea should be innovative and interesting for an 18-year-old developer and 3D artist. Return only the idea text, no extra fluff."
 	}
 	
-	return callGroq(ctx, prompt, "You are a creative idea generator.")
+	rawIdea := callGroq(ctx, prompt, "You are a creative idea generator.")
+	
+	// Self-Criticism Layer
+	criticPrompt := fmt.Sprintf("Analyze this project idea: \"%s\". Find 2-3 potential risks or weaknesses and suggest a way to make it more unique or 'wow'. Return only the refined idea with a short 'Critic Note' at the end.", rawIdea)
+	refinedIdea := callGroq(ctx, criticPrompt, "You are a sharp startup critic.")
+	
+	return refinedIdea
 }
 
 // ============ EMAIL BUILDER HANDLERS ============
@@ -1555,20 +1561,28 @@ func handleUCPDiscovery(c *gin.Context) {
 }
 
 func handleAgentCard(c *gin.Context) {
-	card := map[string]interface{}{
-		"name": "Ezhik Agent",
-		"description": "Autonomous startup planner and market analyst.",
-		"capabilities": []string{"business_planning", "naming", "market_analysis"},
-		"schemas": map[string]interface{}{
-			"startup_goal": "string",
-		},
-		"endpoints": map[string]string{
-			"orchestration": "/api/supervisor/startup",
-		},
-		"payment": map[string]string{
-			"ton": "UQDqNihspM0odGiyRM2UkmsTa-GjuYY5Vfr1eOn93WRGx6ZL",
-		},
+	data, err := os.ReadFile("../AGENT_CARD.json")
+	if err != nil {
+		// Fallback to hardcoded if file not found
+		card := map[string]interface{}{
+			"name":         "Ezhik Agent",
+			"description":  "Autonomous startup planner and market analyst.",
+			"capabilities": []string{"business_planning", "naming", "market_analysis"},
+			"schemas": map[string]interface{}{
+				"startup_goal": "string",
+			},
+			"endpoints": map[string]string{
+				"orchestration": "/api/supervisor/startup",
+			},
+			"payment": map[string]string{
+				"ton": "UQDqNihspM0odGiyRM2UkmsTa-GjuYY5Vfr1eOn93WRGx6ZL",
+			},
+		}
+		c.JSON(http.StatusOK, card)
+		return
 	}
+	var card interface{}
+	json.Unmarshal(data, &card)
 	c.JSON(http.StatusOK, card)
 }
 
