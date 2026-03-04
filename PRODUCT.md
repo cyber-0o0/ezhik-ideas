@@ -1,12 +1,13 @@
 # Ezhik AI Hub - Product Thinking
 
-## Текущее состояние (v2.2)
-- ✅ Работающий AI-хаб с 8 инструментами
+## Текущее состояние (v3.5)
+- ✅ Работающий AI-хаб с мультиагентностью (Supervisor, Negotiator, Outreach)
 - ✅ Groq API интеграция
-- ✅ Telegram бот
-- ❌ Нет аккаунтов/БД
-- ❌ localStorage (не кросс-девайс)
-- ❌ Один API
+- ✅ Telegram бот (@hedgehogfish_bot)
+- ✅ B2A Schema Generator (JSON-LD, GEO)
+- ✅ AgentCard & UCP Discovery support
+- ❌ Нет аккаунтов/БД (в процессе)
+- ❌ x402 Payment Support (в планах)
 
 ## Конкуренты/аналоги
 - Character.AI - персонажи
@@ -14,27 +15,21 @@
 - Claude - эксперт
 - Copilot - код
 
-## Видение v3
-**"AI для обычных людей"** — не нужно учить промпты, просто скажи что нужно
-
-## Возможные фичи
-1. Telegram Auth — вход через @hedgehogfish_bot
-2. Сохранение в SQLite/Postgres — свои проекты, избранное
-3. Персональный AI — знает контекст пользователя
-4. Шаблоны — быстрые пресеты для разных задач
-5. API Multiple — Groq, Anthropic, OpenAI (выбор)
+## Видение v4
+**"Outcome-as-a-Software"** — покупаешь не бота, а готовый бизнес-результат.
 
 ## Roadmap
-- [ ] v3.0 — Архитектура с БД
-- [ ] Telegram Auth
-- [ ] Сохранение проектов
-- [ ] Избранное
-- [ ] Multi-API
+- [ ] v3.6 — Архитектура с БД (SQLite/Postgres)
+- [ ] v3.7 — x402 HTTP Payment Support (Agent Commerce)
+- [ ] v3.8 — Telegram Auth & Project Saving
+- [ ] v3.9 — Multi-API Support (Anthropic, OpenAI)
+- [ ] v4.0 — Outcome-Based Pricing & Premium Tiers
 
-## Бизнес-модель?
-- Бесплатно: лимиты в день
-- Pro: безлимит + фичи
+## Бизнес-модель
+- Freemium: базовые инструменты бесплатно.
+- Pay-per-Result: оплата за сложные артефакты (бизнес-планы, 3D ассеты) через x402/TON.
 
 ## Контент для соцсетей
-- Посты о AI, продуктивности
-- Примеры работы Ezhik
+- Посты о B2A (Business-to-Agent)
+- Примеры работы Ezhik Hub
+- AI & Productivity в 2026 году

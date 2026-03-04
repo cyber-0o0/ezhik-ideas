@@ -267,6 +267,7 @@
     <button class="tab" data-tab="b2a">🤖 B2A Schema</button>
     <button class="tab" data-tab="random">🎲 Рандом</button>
     <button class="tab" data-tab="password">🔐 Пароли</button>
+    <button class="tab" data-tab="donate">💎 Донат</button>
   </div>
   
   <div class="content">
@@ -444,6 +445,26 @@
             <div class="tool-name">Копировать</div>
           </div>
         </div>
+      </div>
+    </div>
+    
+    <!-- Донат -->
+    <div class="tab-content" id="tab-donate">
+      <div class="card">
+        <h3 style="margin-bottom: 12px; color: var(--accent);">Поддержи проект 💎</h3>
+        <p style="font-size: 14px; color: var(--text-secondary); margin-bottom: 15px;">
+          Если тебе нравится Ezhik AI Hub, ты можешь поддержать его развитие. Все донаты идут напрямую Артему.
+        </p>
+        <div class="password-display" id="ton-address" style="font-size: 12px; word-break: break-all; padding: 15px; letter-spacing: 0;">
+          UQDqNihspM0odGiyRM2UkmsTa-GjuYY5Vfr1eOn93WRGx6ZL
+        </div>
+        <div style="text-align: center; margin-bottom: 15px;">
+          <img src="https://api.qrserver.com/v1/create-qr-code/?size=150x150&data=ton://transfer/UQDqNihspM0odGiyRM2UkmsTa-GjuYY5Vfr1eOn93WRGx6ZL" alt="TON QR" style="border-radius: 12px; border: 4px solid white;">
+        </div>
+        <button class="btn" id="copy-ton-btn">Скопировать адрес TON 📋</button>
+        <p style="font-size: 10px; color: #64748b; margin-top: 10px; text-align: center;">
+          Сеть: TON. Только монеты TON.
+        </p>
       </div>
     </div>
   </div>
@@ -773,6 +794,13 @@
 
     // Init password
     generatePassword();
+
+    // Donate copy
+    document.getElementById('copy-ton-btn').addEventListener('click', () => {
+      const addr = document.getElementById('ton-address').textContent.trim();
+      navigator.clipboard.writeText(addr);
+      alert('Адрес скопирован! От души 🐡');
+    });
   </script>
 </body>
 </html>

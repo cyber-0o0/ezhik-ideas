@@ -253,6 +253,20 @@
         
         <div class="grid">
             <div class="card">
+                <h2>AI Генератор ✨</h2>
+                <div class="form-group">
+                    <label>Что вы хотите отправить? (опишите цель)</label>
+                    <textarea id="aiPrompt" placeholder="Например: письмо о запуске нового курса по 3D моделированию для новичков, упомяни скидку 20% и добавь кнопку регистрации"></textarea>
+                </div>
+                <button class="btn btn-primary" id="aiGenerateBtn" style="background: linear-gradient(135deg, #a855f7, #4f6ef7);">
+                    Сгенерировать магией AI
+                </button>
+                <div style="margin-top: 16px; border-top: 1px solid var(--border); padding-top: 16px;">
+                    <p style="font-size: 12px; color: var(--text-dim); text-align: center;">Или настройте вручную ниже ↓</p>
+                </div>
+            </div>
+
+            <div class="card">
                 <h2>Настройки письма</h2>
                 
                 <div id="status" class="status"></div>
@@ -415,6 +429,47 @@
             }
         }
         
+        // AI Generate
+        document.getElementById('aiGenerateBtn').addEventListener('click', async () => {
+            const prompt = document.getElementById('aiPrompt').value;
+            if (!prompt) {
+                showStatus('Введите описание!', 'error');
+                return;
+            }
+            
+            const btn = document.getElementById('aiGenerateBtn');
+            btn.disabled = true;
+            btn.textContent = 'Магия в процессе...';
+            
+            try {
+                const res = await fetch('/api/ai-generate', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ prompt, type: document.getElementById('emailType').value })
+                });
+                
+                const data = await res.json();
+                
+                if (data.html) {
+                    const iframe = document.getElementById('preview');
+                    iframe.srcdoc = data.html;
+                    document.getElementById('downloadBtn').disabled = false;
+                    document.getElementById('downloadBtn').onclick = () => {
+                        const a = document.createElement('a');
+                        a.href = 'data:text/html;charset=utf-8,' + encodeURIComponent(data.html);
+                        a.download = 'ai_email.html';
+                        a.click();
+                    };
+                    showStatus('✓ Email создан AI!', 'success');
+                }
+            } catch (err) {
+                showStatus('Ошибка: ' + err.message, 'error');
+            }
+            
+            btn.disabled = false;
+            btn.textContent = 'Сгенерировать магией AI';
+        });
+
         // Generate
         document.getElementById('generateBtn').addEventListener('click', async () => {
             const btn = document.getElementById('generateBtn');
