@@ -282,7 +282,10 @@
                 
                 <div class="form-group">
                     <label>Тема письма</label>
-                    <input type="text" id="subject" placeholder="Добро пожаловать!" value="Новости от компании">
+                    <div style="display: flex; gap: 8px;">
+                        <input type="text" id="subject" placeholder="Добро пожаловать!" value="Новости от компании" style="flex: 1;">
+                        <button class="btn" id="aiSubjectBtn" style="padding: 0 12px; background: var(--surface); border: 1px solid var(--border); font-size: 14px;">🪄</button>
+                    </div>
                 </div>
                 
                 <div class="form-group">
@@ -468,6 +471,28 @@
             
             btn.disabled = false;
             btn.textContent = 'Сгенерировать магией AI';
+        });
+
+        // AI Subject
+        document.getElementById('aiSubjectBtn').addEventListener('click', async () => {
+            const prompt = document.getElementById('aiPrompt').value || document.getElementById('subject').value;
+            const btn = document.getElementById('aiSubjectBtn');
+            btn.textContent = '...';
+            
+            try {
+                const res = await fetch('/api/ai-subject', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ prompt })
+                });
+                const data = await res.json();
+                if (data.subjects) {
+                    const themes = data.subjects.split(',');
+                    document.getElementById('subject').value = themes[0].trim();
+                    showStatus('Варианты: ' + data.subjects, 'success');
+                }
+            } catch (err) {}
+            btn.textContent = '🪄';
         });
 
         // Generate

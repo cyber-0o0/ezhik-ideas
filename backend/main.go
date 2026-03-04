@@ -101,6 +101,7 @@ func main() {
 	// Email Builder API
 	r.POST("/api/generate", handleEmailGenerate)
 	r.POST("/api/ai-generate", handleAIGenerate)
+	r.POST("/api/ai-subject", handleAISubject)
 	r.POST("/api/upload", handleImageUpload)
 	r.GET("/storage/*path", handleServeImage)
 	
@@ -418,6 +419,20 @@ func handleAIGenerate(c *gin.Context) {
 	
 	html := generateEmailHTML(emailReq)
 	c.JSON(http.StatusOK, gin.H{"html": html, "id": "email_" + randomString(8), "raw_ai": aiResponse})
+}
+
+func handleAISubject(c *gin.Context) {
+	var req struct {
+		Prompt string `json:"prompt" binding:"required"`
+	}
+	if err := c.ShouldBindJSON(&req); err != nil {
+		c.JSON(http.StatusBadRequest, gin.H{"error": "Prompt is required"})
+		return
+	}
+
+	systemPrompt := "Ты эксперт по Email-маркетингу. Придумай 3 цепляющих темы письма на основе описания. Верни их списком через запятую. Только темы, без лишнего текста."
+	response := callGroq(c.Request.Context(), req.Prompt, systemPrompt)
+	c.JSON(http.StatusOK, gin.H{"subjects": response})
 }
 
 func handleImageUpload(c *gin.Context) {
