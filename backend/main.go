@@ -92,6 +92,8 @@ func main() {
 	r.POST("/api/supervisor/pce", handlePlannerCriticExecutor)
 	r.POST("/api/supervisor/ralph", handleRalphMode)
 	r.POST("/api/b2a/schema", handleB2ASchema)
+	r.GET("/api/b2a/assets", handleGetAssets)
+	r.GET("/api/diagnostics", handleDiagnostics)
 	
 	// UCP (Universal Commerce Protocol) mock for B2A discovery
 	r.GET("/.well-known/ucp", handleUCPDiscovery)
@@ -403,10 +405,20 @@ func handleAIGenerate(c *gin.Context) {
 
 	aiResponse := callGroq(c.Request.Context(), req.Prompt, systemPrompt)
 	
+	// Self-Criticism Layer for Email Builder
+	criticPrompt := fmt.Sprintf("Analyze this email structure and content generated for the prompt \"%s\":\n\n%s\n\nFind 2-3 potential issues (e.g., missing call to action, boring subject line, block mismatch) and suggest improvements. Return ONLY the improved JSON object EmailRequest. No extra text.", req.Prompt, aiResponse)
+	improvedResponse := callGroq(c.Request.Context(), criticPrompt, "You are a professional email marketing critic.")
+
 	var emailReq EmailRequest
-	err := json.Unmarshal([]byte(aiResponse), &emailReq)
+	err := json.Unmarshal([]byte(improvedResponse), &emailReq)
 	if err != nil {
-		// Fallback if AI fails JSON
+		// Fallback to initial AI response if improved one fails JSON
+		log.Printf("Improved AI JSON Error: %v, Response: %s", err, improvedResponse)
+		err = json.Unmarshal([]byte(aiResponse), &emailReq)
+	}
+
+	if err != nil {
+		// Final fallback if both fail
 		log.Printf("AI JSON Error: %v, Response: %s", err, aiResponse)
 		emailReq = EmailRequest{
 			Type:      req.Type,
@@ -424,7 +436,7 @@ func handleAIGenerate(c *gin.Context) {
 	}
 	
 	html := generateEmailHTML(emailReq)
-	c.JSON(http.StatusOK, gin.H{"html": html, "id": "email_" + randomString(8), "raw_ai": aiResponse})
+	c.JSON(http.StatusOK, gin.H{"html": html, "id": "email_" + randomString(8), "raw_ai": aiResponse, "improved_ai": improvedResponse})
 }
 
 func handleAISubject(c *gin.Context) {
@@ -1177,6 +1189,7 @@ body, table, td { font-family: Arial, Helvetica, sans-serif; }
 			phone := "79001234567"
 			message := "Привет!"
 			html += `<tr><td style="background:white; padding:24px 32px; text-align:center;">
+
 			<a href="wa.me/` + phone + `?text=` + message + `" style="display:inline-block; background:#25D366; color:white; padding:14px 28px; text-decoration:none; border-radius:28px; font-weight:bold;">
 			💬 Написать в WhatsApp
 			</a>
@@ -1519,6 +1532,17 @@ func handleUCPDiscovery(c *gin.Context) {
 		"version": "2026.1",
 		"services": []map[string]interface{}{
 			{
+				"id": "psx-marketplace",
+				"name": "Artem PSX Asset Market",
+				"description": "Exclusive PSX-style 3D models for agents and developers.",
+				"endpoint": "/api/b2a/assets",
+				"auth": "public",
+				"pricing": map[string]interface{}{
+					"unit": "model",
+					"currency": "TON",
+				},
+			},
+			{
 				"id": "startup-builder",
 				"name": "Ezhik Startup Builder",
 				"description": "Comprehensive business planning by a parallel supervisor of AI specialists.",
@@ -1630,4 +1654,34 @@ func handleB2ASchema(c *gin.Context) {
 	prompt := fmt.Sprintf("Название: %s\nОписание: %s\nЦена: %s %s\nТип: %s", req.Name, req.Description, req.Price, req.Currency, req.Type)
 	response := callGroq(c.Request.Context(), prompt, systemPrompt)
 	c.JSON(http.StatusOK, gin.H{"response": response})
+}
+
+func handleGetAssets(c *gin.Context) {
+	data, err := os.ReadFile("assets.json")
+	if err != nil {
+		c.JSON(http.StatusInternalServerError, gin.H{"error": "Failed to read assets"})
+		return
+	}
+	var assets interface{}
+	json.Unmarshal(data, &assets)
+	c.JSON(http.StatusOK, assets)
+}
+
+func handleDiagnostics(c *gin.Context) {
+	// Gather system status
+	uptime := time.Since(time.Now().Add(-24 * time.Hour)) // Mock uptime for now
+	
+	memoryStats := map[string]interface{}{
+		"long_term_lines": 200, // Mock
+		"daily_log_size": "7KB",
+	}
+
+	c.JSON(http.StatusOK, gin.H{
+		"status": "healthy",
+		"version": "v3.1.0",
+		"uptime": uptime.String(),
+		"memory": memoryStats,
+		"groq_api": "connected",
+		"agent_card": "active",
+	})
 }

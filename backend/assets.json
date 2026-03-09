@@ -1,0 +1,18 @@
+{
+  "version": "1.0",
+  "marketplace_name": "Artem PSX Assets",
+  "assets": [
+    {
+      "id": "psx-market-001",
+      "name": "PSX Supermarket Environment",
+      "description": "Full retro low-poly supermarket environment with interior: shelves, drinks, fruits. PSX style pixelated textures.",
+      "price": 10.0,
+      "currency": "TON",
+      "category": "3D Environment",
+      "format": "blend, fbx",
+      "author": "Artem",
+      "status": "available",
+      "schema_url": "https://ezhikfish.fun:4443/api/b2a/schema?id=psx-market-001"
+    }
+  ]
+}
